@@ -75,7 +75,7 @@ url: "https://magechiu.github.io"
 baseurl: ""
 homepage_note_directory: kubernetes
 
-email: zhaopeng.charles@gmail.com
+email: charles.r.chiu@gmail.com; charles.r.chiu@outlook.com
 
 author:
   name: Charles Zhao

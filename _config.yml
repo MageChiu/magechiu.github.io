@@ -10,7 +10,7 @@ highlighter: rouge
 homepage_note_directory: kubernetes
 plugins:
   - jekyll-feed
-email: zhaopeng.charles@gmail.com
+email: charles.r.chiu@outlook.com
 
 profile:
   subtitle: 平台工程 / 云原生 / AI 工程化
