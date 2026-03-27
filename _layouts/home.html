@@ -18,14 +18,14 @@ layout: default
 <section class="about-hero">
   <div class="about-hero__main">
     <div class="page-heading">
-      <h1>{{ site.profile.name }}</h1>
+      <h1>{{ site.author.name }}</h1>
       <p class="page-heading__subtitle">{{ site.profile.subtitle }}</p>
     </div>
 
     <div class="about-layout">
       <aside class="profile-card">
         <figure class="profile-card__figure">
-          <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.profile.name }}">
+          <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.author.name }}">
         </figure>
 
         <div class="profile-card__meta">
@@ -40,6 +40,12 @@ layout: default
 
         <p>{{ site.profile.intro }}</p>
         <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，内容采用 Markdown 编写，目录组织方式保持简单直接。</p>
+
+        <ul class="about-highlights">
+          <li><strong>{{ all_notes.size }}</strong><span>公开笔记</span></li>
+          <li><strong>{{ home_notes_count }}</strong><span>当前专题</span></li>
+          <li><strong>Markdown</strong><span>主写作格式</span></li>
+        </ul>
       </div>
     </div>
   </div>
