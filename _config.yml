@@ -1,2 +1,39 @@
-#theme: jekyll-theme-architect
-theme: MengD
+title: Charles Zhao Tech Notes
+description: 面向 GitHub Pages 的技术博客，聚焦云原生、工程实践与个人技术笔记。
+url: "https://magechiu.github.io"
+baseurl: ""
+lang: zh-CN
+timezone: Asia/Shanghai
+permalink: pretty
+markdown: kramdown
+highlighter: rouge
+homepage_note_directory: kubernetes
+plugins:
+  - jekyll-feed
+
+author:
+  name: Charles Zhao
+  github: MageChiu
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: default
+  - scope:
+      path: "note"
+    values:
+      layout: note
+
+exclude:
+  - README.txt
+  - LICENSE.txt
+  - .gitignore

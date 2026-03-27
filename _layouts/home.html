@@ -1,0 +1,97 @@
+---
+layout: default
+---
+
+{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+{% assign directory_name = site.homepage_note_directory | default: '' %}
+{% assign home_notes_count = 0 %}
+
+{% for note in all_notes %}
+  {% assign note_path_parts = note.path | split: '/' %}
+  {% assign note_directory = note_path_parts[1] | default: '' %}
+  {% if note_directory == directory_name %}
+    {% assign home_notes_count = home_notes_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
+<section class="hero">
+  <div class="hero__content">
+    <p class="eyebrow">GitHub 技术博客</p>
+    <h1>以笔记为中心的个人知识库</h1>
+    <p class="hero__lead">参考 al-folio 的内容组织方式重构，首页只聚焦当前目录 <strong>{{ directory_name }}</strong> 下的技术内容，适合持续沉淀工程实践。</p>
+
+    <div class="hero__actions">
+      <a class="button button--primary" href="{{ '/notes/' | relative_url }}">查看全部笔记</a>
+      <a class="button button--secondary" href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">访问 GitHub</a>
+    </div>
+  </div>
+
+  <div class="hero__stats">
+    <div class="stat-card">
+      <span class="stat-card__value">{{ all_notes.size }}</span>
+      <span class="stat-card__label">总笔记数</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">{{ home_notes_count }}</span>
+      <span class="stat-card__label">当前目录笔记</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">Markdown</span>
+      <span class="stat-card__label">主内容格式</span>
+    </div>
+  </div>
+</section>
+
+<section class="panel panel--intro">
+  {{ content }}
+</section>
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">当前目录</p>
+      <h2>{{ directory_name }} 笔记</h2>
+    </div>
+    <a class="section-link" href="{{ '/notes/' | relative_url }}">浏览全部</a>
+  </div>
+
+  {% if home_notes_count > 0 %}
+    <div class="note-grid">
+      {% assign rendered_home_notes = 0 %}
+      {% for note in all_notes %}
+        {% assign note_path_parts = note.path | split: '/' %}
+        {% assign note_directory = note_path_parts[1] | default: '' %}
+        {% if note_directory == directory_name and rendered_home_notes < 6 %}
+          {% include note_card.html note=note %}
+          {% assign rendered_home_notes = rendered_home_notes | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">当前目录下还没有公开笔记，你可以在 <code>note/{{ directory_name }}/</code> 中添加新的 Markdown 文件。</p>
+  {% endif %}
+</section>
+
+<section class="panel panel--soft">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">内容约定</p>
+      <h2>写作与资源组织</h2>
+    </div>
+  </div>
+
+  <div class="rules-grid">
+    <div>
+      <h3>笔记位置</h3>
+      <p>把 Markdown 笔记放在 <code>note/</code> 下，可以继续按主题拆分子目录，例如 <code>note/kubernetes/</code>、<code>note/golang/</code>，页面会按真实目录识别分类。</p>
+    </div>
+    <div>
+      <h3>图片位置</h3>
+      <p>把笔记里引用的图片统一放在 <code>resources/images/</code>，推荐使用绝对路径引用，例如 <code>/resources/images/example.png</code>。</p>
+    </div>
+    <div>
+      <h3>渲染能力</h3>
+      <p>默认支持标题、代码块、表格、引用、任务列表、图片、链接与语法高亮。建议每篇笔记都补齐 <code>title</code>、<code>date</code>、<code>summary</code> 等 front matter。</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+<article class="note-card">
+  {% assign note_path_parts = include.note.path | split: '/' %}
+  {% assign note_directory = note_path_parts[1] | default: include.note.section | default: '未分类' %}
+  <div class="note-card__meta">
+    <span>{{ note_directory }}</span>
+    {% if include.note.date %}
+      <span>{{ include.note.date | date: '%Y-%m-%d' }}</span>
+    {% endif %}
+  </div>
+
+  <h3><a href="{{ include.note.url | relative_url }}">{{ include.note.title }}</a></h3>
+
+  {% if include.note.summary %}
+    <p>{{ include.note.summary }}</p>
+  {% elsif include.note.excerpt %}
+    <p>{{ include.note.excerpt | strip_html | truncate: 120 }}</p>
+  {% endif %}
+
+  {% if include.note.tags and include.note.tags.size > 0 %}
+    <ul class="tag-list">
+      {% for tag in include.note.tags %}
+        <li>{{ tag }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</article>

@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+{% assign note_path_parts = page.path | split: '/' %}
+{% assign note_directory = note_path_parts[1] | default: page.section | default: '技术笔记' %}
+
+<article class="note-article">
+  <header class="note-hero">
+    <p class="eyebrow">{{ note_directory }}</p>
+    <h1>{{ page.title }}</h1>
+
+    {% if page.summary %}
+      <p class="note-hero__summary">{{ page.summary }}</p>
+    {% endif %}
+
+    <div class="note-hero__meta">
+      {% if page.date %}
+        <span>更新于 {{ page.date | date: '%Y-%m-%d' }}</span>
+      {% endif %}
+      {% if page.tags and page.tags.size > 0 %}
+        <span>标签：{{ page.tags | join: ' / ' }}</span>
+      {% endif %}
+    </div>
+
+    {% if page.hero_image %}
+      <div class="note-hero__image">
+        <img src="{{ page.hero_image | relative_url }}" alt="{{ page.title }}">
+      </div>
+    {% endif %}
+  </header>
+
+  <div class="markdown-body">
+    {{ content }}
+  </div>
+</article>
