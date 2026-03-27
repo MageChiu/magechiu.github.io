@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+
+<section class="page-hero">
+  <p class="eyebrow">全部内容</p>
+  <h1>{{ page.title }}</h1>
+  <p>{{ page.description }}</p>
+</section>
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">目录索引</p>
+      <h2>全部笔记</h2>
+    </div>
+    <span class="section-count">{{ all_notes.size }} 篇</span>
+  </div>
+
+  <div class="note-grid">
+    {% for note in all_notes %}
+      {% include note_card.html note=note %}
+    {% endfor %}
+  </div>
+</section>

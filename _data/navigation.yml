@@ -1,0 +1,7 @@
+- title: 首页
+  url: /
+- title: 全部笔记
+  url: /notes/
+- title: GitHub
+  url: https://github.com/MageChiu
+  external: true
