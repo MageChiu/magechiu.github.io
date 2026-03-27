@@ -2,13 +2,14 @@
   {% assign note_path_parts = include.note.path | split: '/' %}
   {% assign note_directory = note_path_parts[1] | default: include.note.section | default: '未分类' %}
   <div class="note-card__meta">
-    <span>{{ note_directory }}</span>
     {% if include.note.date %}
       <span>{{ include.note.date | date: '%Y-%m-%d' }}</span>
     {% endif %}
   </div>
 
   <h3><a href="{{ include.note.url | relative_url }}">{{ include.note.title }}</a></h3>
+
+  <p class="note-card__directory">{{ note_directory }}</p>
 
   {% if include.note.summary %}
     <p>{{ include.note.summary }}</p>

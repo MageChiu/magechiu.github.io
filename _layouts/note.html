@@ -7,8 +7,8 @@ layout: default
 
 <article class="note-article">
   <header class="note-hero">
-    <p class="eyebrow">{{ note_directory }}</p>
     <h1>{{ page.title }}</h1>
+    <p class="note-hero__subtitle">{{ note_directory }} / technical note</p>
 
     {% if page.summary %}
       <p class="note-hero__summary">{{ page.summary }}</p>

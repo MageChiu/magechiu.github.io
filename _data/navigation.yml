@@ -2,6 +2,8 @@
   url: /
 - title: 全部笔记
   url: /notes/
+- title: 当前专题
+  url: /notes/#current-directory
 - title: GitHub
   url: https://github.com/MageChiu
   external: true

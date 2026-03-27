@@ -10,6 +10,13 @@ highlighter: rouge
 homepage_note_directory: kubernetes
 plugins:
   - jekyll-feed
+email: zhaopeng.charles@gmail.com
+
+profile:
+  subtitle: 平台工程 / 云原生 / AI 工程化
+  avatar: /resources/images/operator-cover.jpg
+  intro: 持续记录 Kubernetes、工程效率、平台能力建设与个人技术实践。
+  location: Shanghai, China
 
 author:
   name: Charles Zhao

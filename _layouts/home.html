@@ -5,6 +5,7 @@ layout: default
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
 {% assign home_notes_count = 0 %}
+{% assign latest_note = all_notes | first %}
 
 {% for note in all_notes %}
   {% assign note_path_parts = note.path | split: '/' %}
@@ -14,49 +15,47 @@ layout: default
   {% endif %}
 {% endfor %}
 
-<section class="hero">
-  <div class="hero__content">
-    <p class="eyebrow">GitHub 技术博客</p>
-    <h1>以笔记为中心的个人知识库</h1>
-    <p class="hero__lead">参考 al-folio 的内容组织方式重构，首页只聚焦当前目录 <strong>{{ directory_name }}</strong> 下的技术内容，适合持续沉淀工程实践。</p>
+<section class="about-hero">
+  <div class="about-hero__main">
+    <div class="page-heading">
+      <h1>{{ site.profile.name }}</h1>
+      <p class="page-heading__subtitle">{{ site.profile.subtitle }}</p>
+    </div>
 
-    <div class="hero__actions">
-      <a class="button button--primary" href="{{ '/notes/' | relative_url }}">查看全部笔记</a>
-      <a class="button button--secondary" href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">访问 GitHub</a>
-    </div>
-  </div>
+    <div class="about-layout">
+      <aside class="profile-card">
+        <figure class="profile-card__figure">
+          <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.profile.name }}">
+        </figure>
 
-  <div class="hero__stats">
-    <div class="stat-card">
-      <span class="stat-card__value">{{ all_notes.size }}</span>
-      <span class="stat-card__label">总笔记数</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__value">{{ home_notes_count }}</span>
-      <span class="stat-card__label">当前目录笔记</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-card__value">Markdown</span>
-      <span class="stat-card__label">主内容格式</span>
+        <div class="profile-card__meta">
+          <p>{{ site.profile.location }}</p>
+          <p><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">github.com/{{ site.author.github }}</a></p>
+          <p><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+        </div>
+      </aside>
+
+      <div class="about-layout__content markdown-body markdown-body--home">
+        {{ content }}
+
+        <p>{{ site.profile.intro }}</p>
+        <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，内容采用 Markdown 编写，目录组织方式保持简单直接。</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="panel panel--intro">
-  {{ content }}
-</section>
-
-<section class="panel">
+<section class="list-section" id="current-directory">
   <div class="section-heading">
     <div>
-      <p class="eyebrow">当前目录</p>
-      <h2>{{ directory_name }} 笔记</h2>
+      <h2>current directory / {{ directory_name }}</h2>
+      <p>主页只展示当前目录下的技术笔记，保持首页聚焦。</p>
     </div>
-    <a class="section-link" href="{{ '/notes/' | relative_url }}">浏览全部</a>
+    <a class="section-link" href="{{ '/notes/' | relative_url }}">all notes</a>
   </div>
 
   {% if home_notes_count > 0 %}
-    <div class="note-grid">
+    <div class="note-list">
       {% assign rendered_home_notes = 0 %}
       {% for note in all_notes %}
         {% assign note_path_parts = note.path | split: '/' %}
@@ -72,26 +71,34 @@ layout: default
   {% endif %}
 </section>
 
-<section class="panel panel--soft">
+<section class="info-section">
   <div class="section-heading">
     <div>
-      <p class="eyebrow">内容约定</p>
-      <h2>写作与资源组织</h2>
+      <h2>notes & writing conventions</h2>
+      <p>尽量保持接近 al-folio 的信息布局，但内容组织仍然按照你的需求使用 `note/` 与 `resources/images/`。</p>
     </div>
   </div>
 
-  <div class="rules-grid">
+  <div class="info-grid">
     <div>
-      <h3>笔记位置</h3>
+      <h3>笔记目录</h3>
       <p>把 Markdown 笔记放在 <code>note/</code> 下，可以继续按主题拆分子目录，例如 <code>note/kubernetes/</code>、<code>note/golang/</code>，页面会按真实目录识别分类。</p>
     </div>
     <div>
-      <h3>图片位置</h3>
+      <h3>图片目录</h3>
       <p>把笔记里引用的图片统一放在 <code>resources/images/</code>，推荐使用绝对路径引用，例如 <code>/resources/images/example.png</code>。</p>
     </div>
     <div>
       <h3>渲染能力</h3>
       <p>默认支持标题、代码块、表格、引用、任务列表、图片、链接与语法高亮。建议每篇笔记都补齐 <code>title</code>、<code>date</code>、<code>summary</code> 等 front matter。</p>
+    </div>
+    <div>
+      <h3>最近更新</h3>
+      {% if latest_note %}
+        <p>最近一篇公开笔记是 <a href="{{ latest_note.url | relative_url }}">{{ latest_note.title }}</a>。</p>
+      {% else %}
+        <p>当前还没有可展示的公开笔记。</p>
+      {% endif %}
     </div>
   </div>
 </section>
