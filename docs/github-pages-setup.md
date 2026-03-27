@@ -13,11 +13,33 @@
 ```text
 note/
   kubernetes/
+    index.md
     operator.md
 resources/
   images/
     operator-cover.jpg
 ```
+
+### 分类目录说明文件
+
+推荐每个分类目录都增加一个 `index.md`，用于控制该分类的：
+
+- 分类标题
+- 分类描述
+- 首页分类卡片展示文案
+- `/notes/` 页面中的分类说明
+
+例如：
+
+```md
+---
+title: Kubernetes
+description: 记录 Kubernetes、Operator、GPU 调度与云原生基础设施相关的长期技术笔记。
+permalink: /notes/#kubernetes
+---
+```
+
+如果某个目录下有笔记文件，但**没有** `index.md`，文章本身仍然可以被展示；但该目录不会拥有完整的分类说明卡片。
 
 ## 二、首次配置 GitHub 仓库
 

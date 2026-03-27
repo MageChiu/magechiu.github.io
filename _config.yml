@@ -39,6 +39,11 @@ defaults:
       path: "note"
     values:
       layout: note
+  - scope:
+      path: "note"
+      type: "pages"
+    values:
+      is_note: true
 
 exclude:
   - README.txt

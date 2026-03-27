@@ -4,6 +4,7 @@ layout: default
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
+{% assign note_categories = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name == 'index.md'" | sort: 'title' %}
 {% assign home_notes_count = 0 %}
 {% assign latest_note = all_notes | first %}
 
@@ -75,6 +76,51 @@ layout: default
   {% else %}
     <p class="empty-state">当前目录下还没有公开笔记，你可以在 <code>note/{{ directory_name }}/</code> 中添加新的 Markdown 文件。</p>
   {% endif %}
+</section>
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>directories & categories</h2>
+      <p>目录默认自动归类；如果你在 <code>note/&lt;目录&gt;/index.md</code> 中写了说明，这里会自动读取并展示。</p>
+    </div>
+  </div>
+
+  <div class="category-grid">
+    {% for category in note_categories %}
+      {% assign category_path_parts = category.path | split: '/' %}
+      {% assign category_key = category_path_parts[1] | default: category.title %}
+      {% assign category_notes_count = 0 %}
+      {% assign category_latest_note = nil %}
+
+      {% for note in all_notes %}
+        {% assign note_path_parts = note.path | split: '/' %}
+        {% assign note_directory = note_path_parts[1] | default: '' %}
+        {% if note_directory == category_key %}
+          {% assign category_notes_count = category_notes_count | plus: 1 %}
+          {% if category_latest_note == nil %}
+            {% assign category_latest_note = note %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      <article class="category-card">
+        <h3>{{ category.title | default: category_key }}</h3>
+        {% if category.description %}
+          <p>{{ category.description }}</p>
+        {% elsif category.excerpt %}
+          <p>{{ category.excerpt | strip_html | truncate: 120 }}</p>
+        {% endif %}
+
+        <div class="category-card__meta">
+          <span>{{ category_notes_count }} 篇笔记</span>
+          {% if category_latest_note %}
+            <span>最近更新：<a href="{{ category_latest_note.url | relative_url }}">{{ category_latest_note.title }}</a></span>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
 </section>
 
 <section class="info-section">

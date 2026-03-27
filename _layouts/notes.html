@@ -3,24 +3,46 @@ layout: default
 ---
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+{% assign note_categories = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name == 'index.md'" | sort: 'title' %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
   <p>{{ page.description }}</p>
 </section>
 
-<section class="list-section">
-  <div class="section-heading">
-    <div>
-      <h2>all notes</h2>
-      <p>按时间倒序展示所有笔记，目录信息来自真实文件路径。</p>
-    </div>
-    <span class="section-count">{{ all_notes.size }} 篇</span>
-  </div>
+{% for category in note_categories %}
+  {% assign category_path_parts = category.path | split: '/' %}
+  {% assign category_key = category_path_parts[1] | default: category.title %}
+  {% assign category_notes_count = 0 %}
 
-  <div class="note-list">
+  {% capture category_notes_markup %}
     {% for note in all_notes %}
-      {% include note_card.html note=note %}
+      {% assign note_path_parts = note.path | split: '/' %}
+      {% assign note_directory = note_path_parts[1] | default: '' %}
+      {% if note_directory == category_key %}
+        {% assign category_notes_count = category_notes_count | plus: 1 %}
+        {% include note_card.html note=note %}
+      {% endif %}
     {% endfor %}
-  </div>
-</section>
+  {% endcapture %}
+
+  <section class="list-section" id="{{ category_key }}">
+    <div class="section-heading">
+      <div>
+        <h2>{{ category.title | default: category_key }}</h2>
+        {% if category.description %}
+          <p>{{ category.description }}</p>
+        {% elsif category.excerpt %}
+          <p>{{ category.excerpt | strip_html | truncate: 140 }}</p>
+        {% else %}
+          <p>按时间倒序展示 {{ category_key }} 目录下的技术笔记。</p>
+        {% endif %}
+      </div>
+      <span class="section-count">{{ category_notes_count }} 篇</span>
+    </div>
+
+    <div class="note-list">
+      {{ category_notes_markup }}
+    </div>
+  </section>
+{% endfor %}

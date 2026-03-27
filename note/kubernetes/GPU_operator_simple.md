@@ -1,3 +1,13 @@
+---
+title: NVIDIA GPU Operator 完全指南
+date: 2026-03-28
+summary: 从架构、核心组件、部署方式和异构 GPU 管理几个角度系统梳理 NVIDIA GPU Operator。
+tags:
+  - kubernetes
+  - gpu
+  - operator
+---
+
 # NVIDIA GPU Operator 完全指南
 
 ## 一、概述
