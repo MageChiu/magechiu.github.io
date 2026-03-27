@@ -1,4 +1,4 @@
-title: Charles Zhao Tech Notes
+title: Peng Zhao Tech Notes
 description: 面向 GitHub Pages 的技术博客，聚焦云原生、工程实践与个人技术笔记。
 url: "https://magechiu.github.io"
 baseurl: ""
@@ -19,7 +19,7 @@ profile:
   location: Shanghai, China
 
 author:
-  name: Charles Zhao
+  name: Peng Zhao
   github: MageChiu
 
 kramdown:
