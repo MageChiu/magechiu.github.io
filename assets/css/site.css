@@ -134,9 +134,9 @@ pre {
 .author-sidebar {
   position: sticky;
   top: 2rem;
-  padding: 1.2rem;
+  padding: 1.25rem;
   border: 1px solid var(--global-divider-color);
-  border-radius: 1rem;
+  border-radius: 1.1rem;
   background: linear-gradient(180deg, #ffffff 0%, var(--global-soft-bg-color) 100%);
   box-shadow: 0 20px 40px -30px var(--global-shadow-color);
 }
@@ -154,12 +154,37 @@ pre {
 .author-sidebar__name {
   margin: 0;
   font-family: "Merriweather", serif;
-  font-size: 1.32rem;
+  font-size: 1.38rem;
+}
+
+.author-sidebar__eyebrow,
+.author-sidebar__contact-kicker,
+.author-sidebar__link-label {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.author-sidebar__eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--global-theme-color);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.author-sidebar__identity {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(74, 111, 165, 0.12);
+}
+
+.author-sidebar__summary {
+  margin-top: 1rem;
 }
 
 .author-sidebar__subtitle,
 .author-sidebar__bio,
 .author-sidebar__about,
+.author-sidebar__contact-text,
+.author-sidebar__qr figcaption,
 .author-sidebar__links {
   color: var(--global-text-color-light);
 }
@@ -179,47 +204,101 @@ pre {
   font-size: 0.92rem;
 }
 
+.author-sidebar__meta-card {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(74, 111, 165, 0.12);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.author-sidebar__section-title {
+  margin: 0 0 0.8rem;
+  font-family: "Merriweather", serif;
+  font-size: 0.98rem;
+}
+
 .author-sidebar__links {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.author-sidebar__links li + li {
-  margin-top: 0.35rem;
+.author-sidebar__links li {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
 }
 
-.author-sidebar__links a {
+.author-sidebar__links li + li {
+  margin-top: 0.65rem;
+}
+
+.author-sidebar__link-label {
+  color: var(--global-text-color-light);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.author-sidebar__link-value {
+  color: var(--global-text-color);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.author-sidebar__links a.author-sidebar__link-value {
   font-weight: 600;
 }
 
 .author-sidebar__contact-card {
   margin-top: 1.1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--global-divider-color);
+  padding: 1rem;
+  border: 1px solid rgba(74, 111, 165, 0.14);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(237, 243, 250, 0.9) 100%);
+}
+
+.author-sidebar__contact-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.author-sidebar__contact-kicker {
+  margin: 0;
+  color: var(--global-theme-color);
+  font-size: 0.74rem;
+  font-weight: 700;
 }
 
 .author-sidebar__contact-title {
   margin: 0;
   font-family: "Merriweather", serif;
-  font-size: 1rem;
+  font-size: 1.02rem;
 }
 
 .author-sidebar__contact-text {
-  margin: 0.45rem 0 0;
-  color: var(--global-text-color-light);
+  margin: 0.55rem 0 0;
   font-size: 0.9rem;
 }
 
 .author-sidebar__qr {
-  margin: 0.85rem 0 0;
+  margin: 0.95rem 0 0;
 }
 
 .author-sidebar__qr img {
-  width: min(100%, 220px);
+  width: min(100%, 228px);
   border-radius: 0.85rem;
   border: 1px solid var(--global-divider-color);
   box-shadow: 0 18px 28px -26px var(--global-shadow-color);
+}
+
+.author-sidebar__qr figcaption {
+  margin-top: 0.55rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
 }
 
 .page-heading h1,

@@ -3,28 +3,53 @@
     <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.author.name }}">
   </figure>
 
-  <h2 class="author-sidebar__name">{{ site.author.name }}</h2>
-  <p class="author-sidebar__subtitle">{{ site.profile.subtitle }}</p>
-  <p class="author-sidebar__bio">{{ site.profile.intro }}</p>
-  {% if site.profile.about %}
-    <p class="author-sidebar__about">{{ site.profile.about }}</p>
-  {% endif %}
+  <div class="author-sidebar__identity">
+    <p class="author-sidebar__eyebrow">个人名片</p>
+    <h2 class="author-sidebar__name">{{ site.author.name }}</h2>
+    <p class="author-sidebar__subtitle">{{ site.profile.subtitle }}</p>
+  </div>
 
-  <ul class="author-sidebar__links">
-    <li>{{ site.profile.location }}</li>
-    <li><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">GitHub</a></li>
-    <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-    {% if site.profile.wechat_public_account %}
-      <li>公众号：{{ site.profile.wechat_public_account.name }}</li>
+  <div class="author-sidebar__summary">
+    <p class="author-sidebar__bio">{{ site.profile.intro }}</p>
+    {% if site.profile.about %}
+      <p class="author-sidebar__about">{{ site.profile.about }}</p>
     {% endif %}
-  </ul>
+  </div>
+
+  <section class="author-sidebar__meta-card">
+    <h3 class="author-sidebar__section-title">联系与更新</h3>
+    <ul class="author-sidebar__links">
+      <li>
+        <span class="author-sidebar__link-label">位置</span>
+        <span class="author-sidebar__link-value">{{ site.profile.location }}</span>
+      </li>
+      <li>
+        <span class="author-sidebar__link-label">GitHub</span>
+        <a class="author-sidebar__link-value" href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">{{ site.author.github }}</a>
+      </li>
+      <li>
+        <span class="author-sidebar__link-label">邮箱</span>
+        <a class="author-sidebar__link-value" href="mailto:{{ site.email }}">{{ site.email }}</a>
+      </li>
+      {% if site.profile.wechat_public_account %}
+        <li>
+          <span class="author-sidebar__link-label">公众号</span>
+          <span class="author-sidebar__link-value">{{ site.profile.wechat_public_account.name }}</span>
+        </li>
+      {% endif %}
+    </ul>
+  </section>
 
   {% if site.profile.wechat_public_account %}
     <section class="author-sidebar__contact-card">
-      <h3 class="author-sidebar__contact-title">公众号</h3>
+      <div class="author-sidebar__contact-header">
+        <p class="author-sidebar__contact-kicker">关注更新</p>
+        <h3 class="author-sidebar__contact-title">公众号 · {{ site.profile.wechat_public_account.name }}</h3>
+      </div>
       <p class="author-sidebar__contact-text">{{ site.profile.wechat_public_account.description }}</p>
       <figure class="author-sidebar__qr">
         <img src="{{ site.profile.wechat_public_account.qr_image | relative_url }}" alt="{{ site.profile.wechat_public_account.name }} 二维码">
+        <figcaption>微信扫码，第一时间收到新文章和技术更新。</figcaption>
       </figure>
     </section>
   {% endif %}
