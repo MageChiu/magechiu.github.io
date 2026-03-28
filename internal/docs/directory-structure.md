@@ -20,7 +20,7 @@ assets/css/            站点样式
 - `notes.md`：全部笔记页
 - `resources/papers/index.md`：公开论文资源页
 - `_data/note_categories.yml`：笔记分类配置
-- `_data/papers.yml`：论文资源数据
+- `_publications/`：论文元数据 collection
 
 ## 二、隐藏维护目录
 
@@ -42,11 +42,12 @@ internal/docs/
 
 ### 论文资源
 
-1. `_data/papers.yml` 保存公开展示的论文元数据。
-2. `resources/papers/index.md` 提供公开入口页。
-3. `_layouts/papers.html` 负责论文资源页布局。
-4. `_includes/paper_card.html` 负责论文卡片渲染。
-5. `_layouts/home.html` 首页展示精选论文预览。
+1. `_publications/` 保存公开展示的论文元数据。
+2. `resources/papers/` 保存本地 PDF 等论文资源文件。
+3. `resources/papers/index.md` 提供公开入口页。
+4. `_layouts/papers.html` 负责论文资源页布局。
+5. `_includes/paper_card.html` 负责论文卡片渲染。
+6. `_layouts/home.html` 首页展示精选论文预览。
 
 ## 四、后续扩展建议
 

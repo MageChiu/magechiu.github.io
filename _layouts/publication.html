@@ -1,0 +1,54 @@
+---
+layout: default
+---
+
+<article class="publication-article note-article">
+  <header class="note-hero">
+    <h1>{{ page.title }}</h1>
+    <p class="note-hero__subtitle">publication / {{ page.category }}</p>
+
+    <div class="note-hero__actions archive-actions">
+      <a class="archive-action-link" href="{{ '/papers/' | relative_url }}">All publications</a>
+      {% if page.paperurl %}
+        <a class="archive-action-link" href="{% if page.paperurl contains '://' %}{{ page.paperurl }}{% else %}{{ page.paperurl | relative_url }}{% endif %}" target="_blank" rel="noreferrer">
+          {% if page.paper_source == 'local' %}Open PDF{% else %}Open paper{% endif %}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="note-hero__meta">
+      {% if page.venue %}
+        <span>{{ page.venue }}</span>
+      {% endif %}
+      {% if page.date %}
+        <span>{{ page.date | date: '%B %d, %Y' }}</span>
+      {% endif %}
+    </div>
+
+    {% if page.authors %}
+      <p class="note-hero__summary">{{ page.authors }}</p>
+    {% endif %}
+  </header>
+
+  <div class="markdown-body">
+    {% if page.excerpt %}
+      <p>{{ page.excerpt }}</p>
+    {% endif %}
+
+    {% if page.paper_source == 'local' %}
+      <p><strong>Source:</strong> This publication entry is backed by a local PDF stored in <code>resources/papers/</code>.</p>
+    {% endif %}
+
+    {% if page.citation %}
+      <blockquote>{{ page.citation }}</blockquote>
+    {% endif %}
+
+    <p>
+      {% if page.paperurl %}
+        <a href="{% if page.paperurl contains '://' %}{{ page.paperurl }}{% else %}{{ page.paperurl | relative_url }}{% endif %}" target="_blank" rel="noreferrer">Read paper</a>
+      {% endif %}
+    </p>
+
+    {{ content }}
+  </div>
+</article>

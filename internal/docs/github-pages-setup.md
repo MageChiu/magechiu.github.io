@@ -14,14 +14,15 @@
 - 技术笔记主目录：`note/`
 - 笔记图片目录：`resources/images/`
 - 公开论文资源页源码：`resources/papers/index.md`
-- 论文结构化数据：`_data/papers.yml`
+- 论文 collection 元数据：`_publications/`
+- 论文分类配置：`_config.yml` 中的 `publication_category`
 - 笔记分类元信息：`_data/note_categories.yml`
 - 首页专题目录：由 `_config.yml` 中的 `homepage_note_directory` 控制
 - 内部维护文档：统一放在 `internal/` 下，并通过 `_config.yml` 排除发布
 
 ## 推荐维护顺序
 
-1. 先在 `note/` 或 `_data/papers.yml` 中更新内容。
+1. 先在 `note/`、`_publications/` 或 `resources/papers/` 中更新内容。
 2. 如需新增目录或展示逻辑，同时更新 `internal/docs/directory-structure.md`。
 3. 本地执行构建验证。
 4. 检查 GitHub Actions 的 `verify.yml` 与 `pages.yml` 是否通过。

@@ -4,10 +4,40 @@ layout: default
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+{% assign note_year_groups = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
   <p>{{ page.description }}</p>
+</section>
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>topic archive</h2>
+      <p>先按主题快速浏览，再往下按年份查看完整归档。</p>
+    </div>
+  </div>
+
+  <div class="category-grid">
+    {% for group in grouped_notes %}
+      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+      {% assign latest_note = group.items | first %}
+
+      <article class="category-card">
+        <h3>{{ category_meta.title | default: group.name }}</h3>
+        <p>{{ category_meta.description | default: '按主题整理的技术笔记归档。' }}</p>
+
+        <div class="category-card__meta">
+          <span>{{ group.items.size }} 篇笔记</span>
+          {% if latest_note %}
+            <span>最近更新：<a href="{{ latest_note.url | relative_url }}">{{ latest_note.title }}</a></span>
+          {% endif %}
+          <span><a href="#{{ group.name }}">查看主题归档</a></span>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
 </section>
 
 {% for group in grouped_notes %}
@@ -22,10 +52,30 @@ layout: default
       <span class="section-count">{{ group.items.size }} 篇</span>
     </div>
 
-    <div class="note-list">
+    <div class="archive-list">
       {% for note in group.items %}
         {% include note_card.html note=note %}
       {% endfor %}
     </div>
   </section>
 {% endfor %}
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>year archive</h2>
+      <p>参考 academicpages 的 archive 方式，按年份快速查看所有笔记。</p>
+    </div>
+  </div>
+
+  {% for year_group in note_year_groups %}
+    <section class="year-archive-section">
+      <h3 class="year-archive-section__title">{{ year_group.name }}</h3>
+      <div class="archive-list">
+        {% for note in year_group.items %}
+          {% include note_card.html note=note %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+</section>

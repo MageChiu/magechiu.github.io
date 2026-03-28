@@ -8,6 +8,27 @@ permalink: pretty
 markdown: kramdown
 highlighter: rouge
 homepage_note_directory: kubernetes
+collections:
+  publications:
+    output: true
+    permalink: /publication/:path/
+
+publication_category:
+  orchestration:
+    title: Orchestration Papers
+    description: 容器编排、控制平面与集群管理相关论文。
+  scheduling:
+    title: Scheduling Papers
+    description: 资源分配、并发控制与调度器设计相关论文。
+  infrastructure:
+    title: Infrastructure Papers
+    description: 数据中心、平台工程与系统架构背景论文。
+  ai-systems:
+    title: AI Systems Papers
+    description: 大模型系统、分布式训练与自动并行方向论文。
+  local-files:
+    title: Local Paper Files
+    description: 放在 resources/papers/ 中的本地 PDF 论文文件。
 plugins:
   - jekyll-feed
 email: charles.r.chiu@outlook.com
@@ -35,6 +56,11 @@ defaults:
       type: "pages"
     values:
       layout: default
+  - scope:
+      path: ""
+      type: "publications"
+    values:
+      layout: publication
   - scope:
       path: "note"
     values:

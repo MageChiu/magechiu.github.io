@@ -51,22 +51,27 @@ resources/images/
 
 ## 三、论文资源规范
 
-公开展示的论文列表使用 `_data/papers.yml` 维护。建议每篇论文包含：
+公开展示的论文列表改为使用 `_publications/` collection 维护。建议每篇论文使用独立 Markdown 元数据文件，并包含：
 
 - `title`
-- `authors`
+- `collection: publications`
+- `category`
+- `date`
 - `venue`
-- `year`
-- `url`
-- `summary`
+- `paperurl`
+- `authors`
+- `excerpt`
+- `citation`
 - `tags`
 - `featured`
 
-如果后续需要补充论文截图、阅读笔记或配套图片，可以放到：
+如果后续需要补充论文 PDF、截图、阅读笔记或配套图片，可以放到：
 
 ```text
 resources/papers/
 ```
+
+如果 `resources/papers/` 里新增了本地 PDF，推荐同步新增一个 `_publications/*.md` 条目，这样它会自动出现在公开的 Publications 页面和首页精选论文区域中。
 
 ## 四、分类元信息规范
 

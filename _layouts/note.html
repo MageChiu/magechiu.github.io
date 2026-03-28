@@ -10,13 +10,18 @@ layout: default
     <h1>{{ page.title }}</h1>
     <p class="note-hero__subtitle">{{ note_directory }} / technical note</p>
 
+    <div class="note-hero__actions archive-actions">
+      <a class="archive-action-link" href="{{ '/notes/' | relative_url }}">All notes</a>
+      <a class="archive-action-link" href="{{ '/notes/#' | append: note_directory | relative_url }}">{{ note_directory }} archive</a>
+    </div>
+
     {% if page.summary %}
       <p class="note-hero__summary">{{ page.summary }}</p>
     {% endif %}
 
     <div class="note-hero__meta">
       {% if page.date %}
-        <span>更新于 {{ page.date | date: '%Y-%m-%d' }}</span>
+        <span>{{ page.date | date: '%B %d, %Y' }}</span>
       {% endif %}
       {% if page.tags and page.tags.size > 0 %}
         <span>标签：{{ page.tags | join: ' / ' }}</span>

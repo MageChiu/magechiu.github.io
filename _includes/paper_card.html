@@ -1,37 +1,67 @@
 {% assign paper = include.paper %}
 {% assign card_variant = include.variant | default: 'default' %}
+{% assign publication_url = paper.paperurl | default: paper.url %}
+{% assign details_url = paper.url | default: paper.permalink | default: paper.relative_path %}
+{% assign has_external_link = false %}
+{% if publication_url contains '://' or publication_url contains '.pdf' or publication_url contains '/resources/papers/' %}
+  {% assign has_external_link = true %}
+{% endif %}
 
-<article class="paper-card{% if card_variant == 'compact' %} paper-card--compact{% endif %}">
+<article class="paper-card archive-item{% if card_variant == 'compact' %} paper-card--compact{% endif %}">
   <div class="paper-card__eyebrow">
     {% if paper.category %}
       <span>{{ paper.category }}</span>
     {% endif %}
-    {% if paper.year %}
+    {% if paper.date %}
+      <span>{{ paper.date | date: '%Y' }}</span>
+    {% elsif paper.year %}
       <span>{{ paper.year }}</span>
     {% endif %}
   </div>
 
-  <h3>
-    <a href="{{ paper.url }}" target="_blank" rel="noreferrer">{{ paper.title }}</a>
-  </h3>
+  <div class="archive-item__content">
+    <h3>
+      <a href="{% if publication_url contains '://' %}{{ publication_url }}{% else %}{{ publication_url | relative_url }}{% endif %}" target="_blank" rel="noreferrer">{{ paper.title }}</a>
+    </h3>
 
-  {% if paper.authors %}
-    <p class="paper-card__authors">{{ paper.authors }}</p>
-  {% endif %}
+    {% if paper.authors %}
+      <p class="paper-card__authors">{{ paper.authors }}</p>
+    {% endif %}
 
-  {% if paper.venue %}
-    <p class="paper-card__venue">{{ paper.venue }}</p>
-  {% endif %}
+    {% if paper.venue %}
+      <p class="paper-card__venue">Published in {{ paper.venue }}{% if paper.date %}, {{ paper.date | date: '%Y' }}{% elsif paper.year %}, {{ paper.year }}{% endif %}</p>
+    {% endif %}
 
-  {% if paper.summary %}
-    <p class="paper-card__summary">{{ paper.summary }}</p>
-  {% endif %}
+    {% if paper.excerpt %}
+      <p class="paper-card__summary">{{ paper.excerpt | strip_html }}</p>
+    {% elsif paper.summary %}
+      <p class="paper-card__summary">{{ paper.summary }}</p>
+    {% endif %}
 
-  {% if paper.tags and paper.tags.size > 0 %}
-    <ul class="tag-list">
-      {% for tag in paper.tags %}
-        <li>{{ tag }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    {% if paper.citation %}
+      <p class="paper-card__citation">{{ paper.citation }}</p>
+    {% endif %}
+
+    {% if paper.tags and paper.tags.size > 0 %}
+      <ul class="tag-list">
+        {% for tag in paper.tags %}
+          <li>{{ tag }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="archive-actions">
+      {% if paper.url %}
+        <a class="archive-action-link" href="{{ paper.url | relative_url }}">Details</a>
+      {% endif %}
+      {% if publication_url %}
+        <a class="archive-action-link" href="{% if publication_url contains '://' %}{{ publication_url }}{% else %}{{ publication_url | relative_url }}{% endif %}" target="_blank" rel="noreferrer">
+          {% if paper.paper_source == 'local' %}Open PDF{% else %}Paper Link{% endif %}
+        </a>
+      {% endif %}
+      {% if paper.paper_source == 'local' and publication_url %}
+        <span class="archive-action-hint">local file</span>
+      {% endif %}
+    </div>
+  </div>
 </article>

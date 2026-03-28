@@ -5,10 +5,9 @@ layout: default
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
 {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
-{% assign all_papers = site.data.papers | sort: 'year' | reverse %}
-{% assign featured_papers = site.data.papers | where: 'featured', true | sort: 'year' | reverse %}
+{% assign all_papers = site.publications | sort: 'date' | reverse %}
+{% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
 {% assign home_notes_count = 0 %}
-{% assign latest_note = all_notes | first %}
 
 {% for note in all_notes %}
   {% assign note_path_parts = note.path | split: '/' %}
@@ -18,41 +17,23 @@ layout: default
   {% endif %}
 {% endfor %}
 
-<section class="about-hero">
-  <div class="about-hero__main">
-    <div class="page-heading">
-      <h1>{{ site.author.name }}</h1>
-      <p class="page-heading__subtitle">{{ site.profile.subtitle }}</p>
-    </div>
-
-    <div class="about-layout">
-      <aside class="profile-card">
-        <figure class="profile-card__figure">
-          <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.author.name }}">
-        </figure>
-
-        <div class="profile-card__meta">
-          <p>{{ site.profile.location }}</p>
-          <p><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">github.com/{{ site.author.github }}</a></p>
-          <p><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
-        </div>
-      </aside>
-
-      <div class="about-layout__content markdown-body markdown-body--home">
-        {{ content }}
-
-        <p>{{ site.profile.intro }}</p>
-        <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，内容采用 Markdown 编写，目录组织方式保持简单直接。</p>
-
-        <ul class="about-highlights">
-          <li><strong>{{ all_notes.size }}</strong><span>公开笔记</span></li>
-          <li><strong>{{ home_notes_count }}</strong><span>当前专题</span></li>
-          <li><strong>{{ all_papers.size }}</strong><span>论文资源</span></li>
-          <li><strong>Markdown</strong><span>主写作格式</span></li>
-        </ul>
-      </div>
-    </div>
+<section class="academic-hero">
+  <div class="page-heading">
+    <h1>{{ site.author.name }}</h1>
+    <p class="page-heading__subtitle">{{ site.profile.subtitle }}</p>
   </div>
+
+  <div class="markdown-body markdown-body--home">
+    {{ content }}
+    <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，保留技术博客的可读性，同时采用更接近 academicpages 的学术主页展示方式。</p>
+  </div>
+
+  <ul class="about-highlights">
+    <li><strong>{{ all_notes.size }}</strong><span>Public Notes</span></li>
+    <li><strong>{{ home_notes_count }}</strong><span>Current Topic</span></li>
+    <li><strong>{{ all_papers.size }}</strong><span>Publications</span></li>
+    <li><strong>{{ site.publication_category.size }}</strong><span>Paper Sections</span></li>
+  </ul>
 </section>
 
 <section class="list-section" id="current-directory">
@@ -85,20 +66,20 @@ layout: default
 <section class="list-section">
   <div class="section-heading">
     <div>
-      <h2>selected papers</h2>
-      <p>公开维护的论文资源区，集中收录与当前博客主题强相关的基础论文与系统论文。</p>
+      <h2>selected publications</h2>
+      <p>公开维护的论文与本地 PDF 资料入口，展示方式参考 academicpages 的 publications 列表。</p>
     </div>
     <a class="section-link" href="{{ '/papers/' | relative_url }}">all papers</a>
   </div>
 
   {% if featured_papers.size > 0 %}
-    <div class="paper-grid">
+    <div class="archive-list">
       {% for paper in featured_papers limit:3 %}
-        {% include paper_card.html paper=paper %}
+        {% include paper_card.html paper=paper variant='compact' %}
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-state">论文资源区还没有内容，后续可以在 <code>_data/papers.yml</code> 中追加公开论文链接。</p>
+    <p class="empty-state">论文资源区还没有内容，后续可以在 <code>_publications/</code> 中追加论文元数据文件。</p>
   {% endif %}
 </section>
 

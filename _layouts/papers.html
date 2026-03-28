@@ -2,8 +2,8 @@
 layout: default
 ---
 
-{% assign all_papers = site.data.papers | sort: 'year' | reverse %}
-{% assign featured_papers = site.data.papers | where: 'featured', true | sort: 'year' | reverse %}
+{% assign all_papers = site.publications | sort: 'date' | reverse %}
+{% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
@@ -20,15 +20,15 @@ layout: default
   <section class="list-section">
     <div class="section-heading">
       <div>
-        <h2>featured papers</h2>
+        <h2>featured publications</h2>
         <p>优先展示与 Kubernetes、调度系统、平台工程和 AI 基础设施相关的代表性论文。</p>
       </div>
       <span class="section-count">{{ featured_papers.size }} 篇</span>
     </div>
 
-    <div class="paper-grid">
+    <div class="archive-list">
       {% for paper in featured_papers %}
-        {% include paper_card.html paper=paper %}
+        {% include paper_card.html paper=paper variant='compact' %}
       {% endfor %}
     </div>
   </section>
@@ -37,15 +37,34 @@ layout: default
 <section class="list-section">
   <div class="section-heading">
     <div>
-      <h2>reading list</h2>
-      <p>持续整理值得反复阅读的系统论文，方便后续写作与工程实现时回查。</p>
+      <h2>publication categories</h2>
+      <p>按 academicpages 风格把论文分成带标题的栏目，同时把 <code>resources/papers/</code> 下的本地 PDF 文件放到单独栏目中展示。</p>
     </div>
     <span class="section-count">{{ all_papers.size }} 篇</span>
   </div>
 
-  <div class="paper-grid paper-grid--single">
-    {% for paper in all_papers %}
-      {% include paper_card.html paper=paper variant='compact' %}
+  <div class="publication-category-grid">
+    {% for category in site.publication_category %}
+      {% assign category_key = category[0] %}
+      {% assign category_meta = category[1] %}
+      {% assign category_papers = all_papers | where: 'category', category_key %}
+
+      {% if category_papers.size > 0 %}
+        <section class="publication-panel">
+          <header class="publication-panel__header">
+            <h3>{{ category_meta.title }}</h3>
+            {% if category_meta.description %}
+              <p>{{ category_meta.description }}</p>
+            {% endif %}
+          </header>
+
+          <div class="archive-list archive-list--compact">
+            {% for paper in category_papers %}
+              {% include paper_card.html paper=paper variant='compact' %}
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
     {% endfor %}
   </div>
 </section>

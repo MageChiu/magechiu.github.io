@@ -6,11 +6,15 @@
   <body>
     {% include site_header.html %}
 
-    <main class="site-main">
-      <div class="container">
+    <div class="container academic-layout">
+      <aside class="academic-layout__sidebar">
+        {% include author_sidebar.html %}
+      </aside>
+
+      <main class="site-main academic-layout__content">
         {{ content }}
-      </div>
-    </main>
+      </main>
+    </div>
 
     {% include site_footer.html %}
   </body>

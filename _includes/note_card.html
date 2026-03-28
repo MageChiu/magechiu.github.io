@@ -1,28 +1,35 @@
-<article class="note-card">
+<article class="note-card archive-item">
   {% assign note_path_parts = include.note.path | split: '/' %}
   {% assign note_directory = note_path_parts[1] | default: include.note.section | default: '未分类' %}
   {% assign note_directory_meta = site.data.note_categories | where: 'key', note_directory | first %}
-  <div class="note-card__meta">
+  <div class="note-card__meta archive-item__meta">
     {% if include.note.date %}
       <span>{{ include.note.date | date: '%Y-%m-%d' }}</span>
     {% endif %}
   </div>
 
-  <h3><a href="{{ include.note.url | relative_url }}">{{ include.note.title }}</a></h3>
+  <div class="archive-item__content">
+    <h3><a href="{{ include.note.url | relative_url }}">{{ include.note.title }}</a></h3>
 
-  <p class="note-card__directory">{{ note_directory_meta.title | default: note_directory }}</p>
+    <p class="note-card__directory">{{ note_directory_meta.title | default: note_directory }}</p>
 
-  {% if include.note.summary %}
-    <p>{{ include.note.summary }}</p>
-  {% elsif include.note.excerpt %}
-    <p>{{ include.note.excerpt | strip_html | truncate: 120 }}</p>
-  {% endif %}
+    {% if include.note.summary %}
+      <p>{{ include.note.summary }}</p>
+    {% elsif include.note.excerpt %}
+      <p>{{ include.note.excerpt | strip_html | truncate: 120 }}</p>
+    {% endif %}
 
-  {% if include.note.tags and include.note.tags.size > 0 %}
-    <ul class="tag-list">
-      {% for tag in include.note.tags %}
-        <li>{{ tag }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+    {% if include.note.tags and include.note.tags.size > 0 %}
+      <ul class="tag-list">
+        {% for tag in include.note.tags %}
+          <li>{{ tag }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="archive-actions">
+      <a class="archive-action-link" href="{{ include.note.url | relative_url }}">Read note</a>
+      <a class="archive-action-link" href="{{ '/notes/#' | append: note_directory | relative_url }}">More in {{ note_directory_meta.title | default: note_directory }}</a>
+    </div>
+  </div>
 </article>

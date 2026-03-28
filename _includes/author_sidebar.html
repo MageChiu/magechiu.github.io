@@ -1,0 +1,15 @@
+<section class="author-sidebar">
+  <figure class="author-sidebar__figure">
+    <img src="{{ site.profile.avatar | relative_url }}" alt="{{ site.author.name }}">
+  </figure>
+
+  <h2 class="author-sidebar__name">{{ site.author.name }}</h2>
+  <p class="author-sidebar__subtitle">{{ site.profile.subtitle }}</p>
+  <p class="author-sidebar__bio">{{ site.profile.intro }}</p>
+
+  <ul class="author-sidebar__links">
+    <li>{{ site.profile.location }}</li>
+    <li><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">GitHub</a></li>
+    <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+  </ul>
+</section>
