@@ -4,14 +4,14 @@ layout: default
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
-{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 {% assign all_papers = site.publications | sort: 'date' | reverse %}
 {% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
 {% assign home_notes_count = 0 %}
 
 {% for note in all_notes %}
   {% assign note_path_parts = note.path | split: '/' %}
-  {% assign note_directory = note_path_parts[1] | default: '' %}
+  {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
   {% if note_directory == directory_name %}
     {% assign home_notes_count = home_notes_count | plus: 1 %}
   {% endif %}
@@ -51,7 +51,7 @@ layout: default
       {% assign rendered_home_notes = 0 %}
       {% for note in all_notes %}
         {% assign note_path_parts = note.path | split: '/' %}
-        {% assign note_directory = note_path_parts[1] | default: '' %}
+        {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
         {% if note_directory == directory_name and rendered_home_notes < 6 %}
           {% include note_card.html note=note %}
           {% assign rendered_home_notes = rendered_home_notes | plus: 1 %}
@@ -105,7 +105,7 @@ layout: default
           {% if category_latest_note %}
             <span>最近更新：<a href="{{ category_latest_note.url | relative_url }}">{{ category_latest_note.title }}</a></span>
           {% endif %}
-          <span><a href="{{ '/notes/#' | append: group.name | relative_url }}">查看该主题</a></span>
+          <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">查看该主题</a></span>
         </div>
       </article>
     {% endfor %}

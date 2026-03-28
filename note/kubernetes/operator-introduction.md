@@ -1,12 +1,13 @@
 ---
-title: 初学 Operator
+title: Kubernetes Operator 入门
 date: 2026-03-28
 section: kubernetes
-summary: 从控制器模式、CRD、Reconcile 循环三个角度快速理解 Operator 的入门心智模型。
+summary: 从控制器模式、CRD 和 Reconcile 循环切入，建立理解 Kubernetes Operator 的基础心智模型。
 tags:
   - kubernetes
   - operator
   - controller
+  - automation
 hero_image: /resources/images/operator-cover.jpg
 ---
 

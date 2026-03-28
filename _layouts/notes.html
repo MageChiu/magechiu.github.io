@@ -3,7 +3,7 @@ layout: default
 ---
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
-{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 {% assign note_year_groups = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 
 <section class="page-header">
@@ -39,7 +39,7 @@ layout: default
           {% if latest_note %}
             <span>最近更新：<a href="{{ latest_note.url | relative_url }}">{{ latest_note.title }}</a></span>
           {% endif %}
-          <span><a href="#{{ group.name }}">查看主题归档</a></span>
+          <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">进入主题页</a></span>
         </div>
       </article>
     {% endfor %}

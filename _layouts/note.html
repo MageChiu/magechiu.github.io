@@ -3,16 +3,18 @@ layout: default
 ---
 
 {% assign note_path_parts = page.path | split: '/' %}
-{% assign note_directory = note_path_parts[1] | default: page.section | default: '技术笔记' %}
+{% assign note_directory = page.section | default: note_path_parts[1] | default: '技术笔记' %}
+{% assign note_directory_meta = site.data.note_categories | where: 'key', note_directory | first %}
+{% assign note_directory_title = note_directory_meta.title | default: note_directory %}
 
 <article class="note-article">
   <header class="note-hero">
     <h1>{{ page.title }}</h1>
-    <p class="note-hero__subtitle">{{ note_directory }} / technical note</p>
+    <p class="note-hero__subtitle">{{ note_directory_title }} / technical note</p>
 
     <div class="note-hero__actions archive-actions">
       <a class="archive-action-link" href="{{ '/notes/' | relative_url }}">All notes</a>
-      <a class="archive-action-link" href="{{ '/notes/#' | append: note_directory | relative_url }}">{{ note_directory }} archive</a>
+      <a class="archive-action-link" href="{{ '/note/' | append: note_directory | append: '/' | relative_url }}">{{ note_directory_title }} archive</a>
     </div>
 
     {% if page.summary %}

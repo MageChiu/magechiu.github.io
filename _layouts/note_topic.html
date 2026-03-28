@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+{% assign topic_key = page.note_category | default: page.section %}
+{% assign topic_meta = site.data.note_categories | where: 'key', topic_key | first %}
+{% assign topic_title = page.title | default: topic_meta.title | default: topic_key %}
+{% assign topic_description = page.description | default: topic_meta.description | default: '按专题整理的技术笔记。' %}
+{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+{% assign topic_notes_count = 0 %}
+
+{% for note in all_notes %}
+  {% assign note_path_parts = note.path | split: '/' %}
+  {% assign note_topic = note.section | default: note_path_parts[1] | default: '' %}
+  {% if note_topic == topic_key %}
+    {% assign topic_notes_count = topic_notes_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
+<section class="page-header">
+  <h1>{{ topic_title }}</h1>
+  <p>{{ topic_description }}</p>
+</section>
+
+<section class="archive-links-bar">
+  <a href="{{ '/notes/' | relative_url }}">Notes Home</a>
+  <a href="{{ '/category-archive/' | relative_url }}">Category Archive</a>
+  <a href="{{ '/year-archive/' | relative_url }}">Year Archive</a>
+  <span class="archive-action-hint">{{ topic_notes_count }} 篇公开笔记</span>
+</section>
+
+{% if content and content != '' %}
+  <section class="info-section">
+    <div class="markdown-body markdown-body--compact">
+      {{ content }}
+    </div>
+  </section>
+{% endif %}
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>latest notes</h2>
+      <p>按时间倒序浏览 {{ topic_title }} 主题下的全部公开笔记。</p>
+    </div>
+    <span class="section-count">{{ topic_notes_count }} 篇</span>
+  </div>
+
+  {% if topic_notes_count > 0 %}
+    <div class="archive-list">
+      {% for note in all_notes %}
+        {% assign note_path_parts = note.path | split: '/' %}
+        {% assign note_topic = note.section | default: note_path_parts[1] | default: '' %}
+        {% if note_topic == topic_key %}
+          {% include note_card.html note=note %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">当前主题下暂时还没有公开笔记。</p>
+  {% endif %}
+</section>

@@ -5,7 +5,7 @@
 ## 一、公开内容目录
 
 ```text
-note/                  技术笔记 Markdown
+note/                  技术笔记目录（按主题拆分，主题目录下可包含 index.md）
 resources/images/      笔记引用图片
 resources/papers/      论文资源页面及相关静态资源
 _data/                 站点结构化数据
@@ -37,11 +37,17 @@ internal/docs/
 
 ### 技术笔记
 
-1. `note/` 下的 Markdown 页面被 Jekyll 识别。
+1. `note/` 下的 Markdown 页面被 Jekyll 识别，主题目录下的 `index.md` 作为专题页入口。
 2. `_layouts/note.html` 负责单篇笔记展示。
 3. `_layouts/home.html` 负责首页的当前专题与主题概览。
 4. `_layouts/notes.html` 负责所有笔记的分组展示。
 5. `_includes/note_card.html` 负责笔记卡片渲染。
+
+### 当前笔记结构约定
+
+- 推荐目录结构：`note/<topic>/index.md` + `note/<topic>/<slug>.md`
+- 主题归类优先读取 Front Matter 中的 `section` 字段，缺失时回退到目录名
+- `_data/note_categories.yml` 中的 `key` 需要与专题页和 `section` 保持一致
 
 ### 论文资源
 

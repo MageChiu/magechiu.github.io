@@ -19,7 +19,7 @@ layout: default
 {% if page.archive_type == 'year' %}
   {% assign grouped_items = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 {% elsif page.archive_type == 'category' %}
-  {% assign grouped_items = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+  {% assign grouped_items = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 {% elsif page.archive_type == 'tag' %}
   {% assign grouped_items = '' | split: '' %}
   {% assign all_tags = all_notes | map: 'tags' | compact | join: '|' | split: '|' | uniq | sort %}
