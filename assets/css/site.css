@@ -10,6 +10,9 @@
   --global-footer-text-color: #6f777d;
   --global-code-bg-color: #f6f8fa;
   --global-border-color: #d6d6d6;
+  --global-soft-bg-color: #f8fafc;
+  --global-soft-accent-color: #edf3fa;
+  --global-shadow-color: rgba(34, 52, 84, 0.08);
   --max-content-width: 1280px;
 }
 
@@ -28,6 +31,7 @@ body {
   font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1rem;
   line-height: 1.75;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -56,8 +60,12 @@ pre {
 }
 
 .site-header {
-  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid var(--global-divider-color);
+  backdrop-filter: blur(14px);
 }
 
 .site-header__inner {
@@ -73,6 +81,7 @@ pre {
   font-family: "Merriweather", serif;
   font-size: 1rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .site-nav {
@@ -84,7 +93,27 @@ pre {
 }
 
 .site-nav a {
+  position: relative;
   color: var(--global-text-color-light);
+  padding-bottom: 0.15rem;
+}
+
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.28rem;
+  width: 100%;
+  height: 2px;
+  background: var(--global-theme-color);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 160ms ease;
+}
+
+.site-nav a:hover::after,
+.site-nav a:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .academic-layout {
@@ -105,6 +134,11 @@ pre {
 .author-sidebar {
   position: sticky;
   top: 2rem;
+  padding: 1.2rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, var(--global-soft-bg-color) 100%);
+  box-shadow: 0 20px 40px -30px var(--global-shadow-color);
 }
 
 .author-sidebar__figure {
@@ -113,13 +147,14 @@ pre {
 
 .author-sidebar__figure img {
   width: 100%;
-  border-radius: 0.35rem;
+  border-radius: 0.9rem;
+  box-shadow: 0 20px 30px -24px var(--global-shadow-color);
 }
 
 .author-sidebar__name {
   margin: 0;
   font-family: "Merriweather", serif;
-  font-size: 1.25rem;
+  font-size: 1.32rem;
 }
 
 .author-sidebar__subtitle,
@@ -130,6 +165,7 @@ pre {
 
 .author-sidebar__subtitle {
   margin: 0.35rem 0 0;
+  font-size: 0.95rem;
 }
 
 .author-sidebar__bio {
@@ -145,6 +181,10 @@ pre {
 
 .author-sidebar__links li + li {
   margin-top: 0.35rem;
+}
+
+.author-sidebar__links a {
+  font-weight: 600;
 }
 
 .page-heading h1,
@@ -191,6 +231,11 @@ pre {
 
 .academic-hero {
   margin-bottom: 3rem;
+  padding: 1.6rem 1.75rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 1.2rem;
+  background: linear-gradient(135deg, #ffffff 0%, var(--global-soft-bg-color) 100%);
+  box-shadow: 0 22px 40px -34px var(--global-shadow-color);
 }
 
 .page-heading {
@@ -218,8 +263,9 @@ pre {
 .about-highlights li {
   padding: 0.85rem 1rem;
   border: 1px solid var(--global-divider-color);
-  border-radius: 0.25rem;
-  background: #fafafa;
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 24px -28px var(--global-shadow-color);
 }
 
 .about-highlights strong,
@@ -245,6 +291,13 @@ pre {
 .page-header,
 .note-article {
   margin-top: 2.5rem;
+}
+
+.info-section {
+  padding: 1.35rem 1.45rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 1rem;
+  background: var(--global-soft-bg-color);
 }
 
 .page-header,
@@ -285,6 +338,10 @@ pre {
   font-size: 0.94rem;
 }
 
+.section-link {
+  font-weight: 600;
+}
+
 .archive-actions {
   display: flex;
   flex-wrap: wrap;
@@ -303,16 +360,20 @@ pre {
   display: inline-flex;
   align-items: center;
   min-height: 2rem;
-  padding: 0.2rem 0.75rem;
+  padding: 0.35rem 0.9rem;
   border-radius: 999px;
-  background: #f7f9fc;
+  background: var(--global-soft-bg-color);
   border: 1px solid var(--global-divider-color);
   font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 
 .archive-links-bar a:hover {
   text-decoration: none;
-  background: #eef3f8;
+  background: var(--global-soft-accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -24px var(--global-shadow-color);
 }
 
 .archive-action-link,
@@ -320,7 +381,7 @@ pre {
   display: inline-flex;
   align-items: center;
   min-height: 2rem;
-  padding: 0.2rem 0.65rem;
+  padding: 0.3rem 0.72rem;
   border: 1px solid var(--global-divider-color);
   border-radius: 999px;
   font-size: 0.82rem;
@@ -330,11 +391,15 @@ pre {
 .archive-action-link {
   color: var(--global-theme-color);
   background: #ffffff;
+  font-weight: 600;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }
 
 .archive-action-link:hover {
   text-decoration: none;
-  background: #f7f9fc;
+  background: var(--global-soft-accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -24px var(--global-shadow-color);
 }
 
 .archive-action-hint {
@@ -344,11 +409,11 @@ pre {
 
 .archive-list {
   display: grid;
-  gap: 0;
+  gap: 0.8rem;
 }
 
 .archive-list--compact {
-  gap: 0.35rem;
+  gap: 0.7rem;
 }
 
 .note-list {
@@ -361,22 +426,30 @@ pre {
   display: grid;
   grid-template-columns: 128px minmax(0, 1fr);
   gap: 1.15rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--global-divider-color);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 18px 30px -32px var(--global-shadow-color);
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.archive-item:hover,
+.note-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(74, 111, 165, 0.22);
+  box-shadow: 0 24px 42px -30px var(--global-shadow-color);
 }
 
 .note-card:first-child {
-  padding-top: 0.2rem;
-}
-
-.note-card:last-child {
-  border-bottom: 0;
+  padding-top: 1rem;
 }
 
 .archive-item__meta,
 .note-card__meta {
   font-size: 0.88rem;
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .archive-item__content h3,
@@ -389,6 +462,7 @@ pre {
 .note-card__directory {
   margin: 0.25rem 0 0.45rem;
   font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .note-card p {
@@ -405,11 +479,12 @@ pre {
 }
 
 .tag-list li {
-  padding: 0.12rem 0.42rem;
+  padding: 0.18rem 0.52rem;
   border: 1px solid var(--global-divider-color);
   border-radius: 999px;
   color: var(--global-text-color-light);
   font-size: 0.77rem;
+  background: var(--global-soft-bg-color);
 }
 
 .info-grid {
@@ -426,22 +501,22 @@ pre {
 }
 
 .category-card {
-  padding: 1rem 1.1rem;
+  padding: 1.15rem 1.2rem;
   border: 1px solid var(--global-divider-color);
-  border-radius: 0.25rem;
-  background: #fafafa;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, var(--global-soft-bg-color) 100%);
+  box-shadow: 0 18px 36px -34px var(--global-shadow-color);
 }
 
 .paper-card {
-  padding: 0.9rem 0;
-  border: 0;
-  border-bottom: 1px solid var(--global-divider-color);
-  border-radius: 0;
-  background: transparent;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(74, 111, 165, 0.12);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .paper-card--compact {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .paper-card__eyebrow {
@@ -451,6 +526,7 @@ pre {
   margin-bottom: 0.65rem;
   font-size: 0.83rem;
   text-transform: lowercase;
+  letter-spacing: 0.01em;
 }
 
 .paper-card__authors,
@@ -461,10 +537,11 @@ pre {
 }
 
 .publication-panel {
-  padding: 1rem 1.1rem;
+  padding: 1.2rem 1.25rem;
   border: 1px solid var(--global-divider-color);
-  border-radius: 0.25rem;
-  background: #fafafa;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, var(--global-soft-bg-color) 100%);
+  box-shadow: 0 20px 40px -34px var(--global-shadow-color);
 }
 
 .publication-panel__header {
@@ -489,7 +566,7 @@ pre {
 .year-archive-section__title {
   margin: 0 0 0.9rem;
   font-family: "Merriweather", serif;
-  font-size: 1.15rem;
+  font-size: 1.22rem;
   color: var(--global-theme-color);
 }
 
@@ -561,12 +638,14 @@ pre {
 }
 
 .note-hero__image img {
-  border-radius: 0.35rem;
+  border-radius: 1rem;
+  box-shadow: 0 22px 38px -30px var(--global-shadow-color);
 }
 
 .markdown-body {
   margin-top: 2rem;
   color: var(--global-text-color);
+  font-size: 1.02rem;
 }
 
 .markdown-body--compact {
@@ -604,8 +683,9 @@ pre {
   margin-left: 0;
   padding: 0.85rem 1rem;
   border-left: 4px solid var(--global-theme-color);
-  background: #fafafa;
+  background: var(--global-soft-bg-color);
   color: var(--global-text-color-light);
+  border-radius: 0.4rem;
 }
 
 .markdown-body table {
@@ -622,7 +702,8 @@ pre {
 }
 
 .markdown-body th {
-  font-weight: 500;
+  font-weight: 700;
+  background: var(--global-soft-bg-color);
 }
 
 .markdown-body code {
@@ -636,7 +717,8 @@ pre {
   overflow: auto;
   padding: 1rem;
   background: var(--global-code-bg-color);
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--global-divider-color);
 }
 
 .markdown-body pre code {
@@ -646,7 +728,8 @@ pre {
 
 .markdown-body img {
   margin: 1.4rem auto;
-  border-radius: 0.35rem;
+  border-radius: 1rem;
+  box-shadow: 0 22px 38px -30px var(--global-shadow-color);
 }
 
 .site-footer {
@@ -673,7 +756,7 @@ pre {
 
   .author-sidebar {
     position: static;
-    max-width: 300px;
+    max-width: 360px;
   }
 }
 
