@@ -49,3 +49,4 @@ exclude:
   - README.txt
   - LICENSE.txt
   - .gitignore
+  - internal

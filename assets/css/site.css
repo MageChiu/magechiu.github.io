@@ -120,12 +120,16 @@ pre {
 .note-hero__summary,
 .section-heading p,
 .note-card p,
+.paper-card p,
 .site-footer,
 .profile-card__meta,
 .empty-state,
 .note-card__meta,
 .note-card__directory,
-.note-hero__meta {
+.note-hero__meta,
+.paper-card__eyebrow,
+.paper-card__authors,
+.paper-card__venue {
   color: var(--global-text-color-light);
 }
 
@@ -177,7 +181,7 @@ pre {
 
 .about-highlights {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
   margin: 1.5rem 0 0;
   padding: 0;
@@ -324,11 +328,54 @@ pre {
   gap: 1rem 1.5rem;
 }
 
+.paper-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+}
+
+.paper-grid--single {
+  grid-template-columns: 1fr;
+}
+
 .category-card {
   padding: 1rem 1.1rem;
   border: 1px solid var(--global-divider-color);
   border-radius: 0.5rem;
   background: rgba(181, 9, 172, 0.02);
+}
+
+.paper-card {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 0.5rem;
+  background: rgba(181, 9, 172, 0.02);
+}
+
+.paper-card--compact {
+  background: #ffffff;
+}
+
+.paper-card__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.83rem;
+  text-transform: lowercase;
+}
+
+.paper-card h3 {
+  margin: 0;
+  font-family: "Roboto Slab", serif;
+  font-size: 1.08rem;
+  font-weight: 400;
+}
+
+.paper-card__authors,
+.paper-card__venue,
+.paper-card__summary {
+  margin: 0.45rem 0 0;
 }
 
 .category-card h3 {
@@ -401,6 +448,10 @@ pre {
 .markdown-body {
   margin-top: 2rem;
   color: var(--global-text-color);
+}
+
+.markdown-body--compact {
+  margin-top: 1.25rem;
 }
 
 .markdown-body h2,
@@ -527,6 +578,10 @@ pre {
   }
 
   .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .paper-grid {
     grid-template-columns: 1fr;
   }
 

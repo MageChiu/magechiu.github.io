@@ -1,0 +1,7 @@
+- key: kubernetes
+  title: Kubernetes
+  description: 记录 Kubernetes、Operator、GPU 调度与云原生基础设施相关的长期技术笔记。
+
+- key: scheduler
+  title: Scheduler
+  description: 记录批处理调度、资源编排、公平性策略与性能感知调度相关的技术笔记。

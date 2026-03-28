@@ -1,0 +1,51 @@
+---
+layout: default
+---
+
+{% assign all_papers = site.data.papers | sort: 'year' | reverse %}
+{% assign featured_papers = site.data.papers | where: 'featured', true | sort: 'year' | reverse %}
+
+<section class="page-header">
+  <h1>{{ page.title }}</h1>
+  <p>{{ page.description }}</p>
+</section>
+
+{% if content and content != '' %}
+  <section class="info-section markdown-body markdown-body--compact">
+    {{ content }}
+  </section>
+{% endif %}
+
+{% if featured_papers.size > 0 %}
+  <section class="list-section">
+    <div class="section-heading">
+      <div>
+        <h2>featured papers</h2>
+        <p>优先展示与 Kubernetes、调度系统、平台工程和 AI 基础设施相关的代表性论文。</p>
+      </div>
+      <span class="section-count">{{ featured_papers.size }} 篇</span>
+    </div>
+
+    <div class="paper-grid">
+      {% for paper in featured_papers %}
+        {% include paper_card.html paper=paper %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>reading list</h2>
+      <p>持续整理值得反复阅读的系统论文，方便后续写作与工程实现时回查。</p>
+    </div>
+    <span class="section-count">{{ all_papers.size }} 篇</span>
+  </div>
+
+  <div class="paper-grid paper-grid--single">
+    {% for paper in all_papers %}
+      {% include paper_card.html paper=paper variant='compact' %}
+    {% endfor %}
+  </div>
+</section>

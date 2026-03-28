@@ -1,0 +1,37 @@
+{% assign paper = include.paper %}
+{% assign card_variant = include.variant | default: 'default' %}
+
+<article class="paper-card{% if card_variant == 'compact' %} paper-card--compact{% endif %}">
+  <div class="paper-card__eyebrow">
+    {% if paper.category %}
+      <span>{{ paper.category }}</span>
+    {% endif %}
+    {% if paper.year %}
+      <span>{{ paper.year }}</span>
+    {% endif %}
+  </div>
+
+  <h3>
+    <a href="{{ paper.url }}" target="_blank" rel="noreferrer">{{ paper.title }}</a>
+  </h3>
+
+  {% if paper.authors %}
+    <p class="paper-card__authors">{{ paper.authors }}</p>
+  {% endif %}
+
+  {% if paper.venue %}
+    <p class="paper-card__venue">{{ paper.venue }}</p>
+  {% endif %}
+
+  {% if paper.summary %}
+    <p class="paper-card__summary">{{ paper.summary }}</p>
+  {% endif %}
+
+  {% if paper.tags and paper.tags.size > 0 %}
+    <ul class="tag-list">
+      {% for tag in paper.tags %}
+        <li>{{ tag }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</article>

@@ -1,6 +1,7 @@
 <article class="note-card">
   {% assign note_path_parts = include.note.path | split: '/' %}
   {% assign note_directory = note_path_parts[1] | default: include.note.section | default: '未分类' %}
+  {% assign note_directory_meta = site.data.note_categories | where: 'key', note_directory | first %}
   <div class="note-card__meta">
     {% if include.note.date %}
       <span>{{ include.note.date | date: '%Y-%m-%d' }}</span>
@@ -9,7 +10,7 @@
 
   <h3><a href="{{ include.note.url | relative_url }}">{{ include.note.title }}</a></h3>
 
-  <p class="note-card__directory">{{ note_directory }}</p>
+  <p class="note-card__directory">{{ note_directory_meta.title | default: note_directory }}</p>
 
   {% if include.note.summary %}
     <p>{{ include.note.summary }}</p>

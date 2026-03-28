@@ -4,7 +4,9 @@ layout: default
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
-{% assign note_categories = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name == 'index.md'" | sort: 'title' %}
+{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+{% assign all_papers = site.data.papers | sort: 'year' | reverse %}
+{% assign featured_papers = site.data.papers | where: 'featured', true | sort: 'year' | reverse %}
 {% assign home_notes_count = 0 %}
 {% assign latest_note = all_notes | first %}
 
@@ -45,6 +47,7 @@ layout: default
         <ul class="about-highlights">
           <li><strong>{{ all_notes.size }}</strong><span>公开笔记</span></li>
           <li><strong>{{ home_notes_count }}</strong><span>当前专题</span></li>
+          <li><strong>{{ all_papers.size }}</strong><span>论文资源</span></li>
           <li><strong>Markdown</strong><span>主写作格式</span></li>
         </ul>
       </div>
@@ -55,8 +58,9 @@ layout: default
 <section class="list-section" id="current-directory">
   <div class="section-heading">
     <div>
-      <h2>current directory / {{ directory_name }}</h2>
-      <p>主页只展示当前目录下的技术笔记，保持首页聚焦。</p>
+      {% assign current_directory_meta = site.data.note_categories | where: 'key', directory_name | first %}
+      <h2>{{ current_directory_meta.title | default: directory_name }}</h2>
+      <p>{{ current_directory_meta.description | default: '当前专题的最新技术笔记。' }}</p>
     </div>
     <a class="section-link" href="{{ '/notes/' | relative_url }}">all notes</a>
   </div>
@@ -81,76 +85,48 @@ layout: default
 <section class="list-section">
   <div class="section-heading">
     <div>
-      <h2>directories & categories</h2>
-      <p>目录默认自动归类；如果你在 <code>note/&lt;目录&gt;/index.md</code> 中写了说明，这里会自动读取并展示。</p>
+      <h2>selected papers</h2>
+      <p>公开维护的论文资源区，集中收录与当前博客主题强相关的基础论文与系统论文。</p>
+    </div>
+    <a class="section-link" href="{{ '/papers/' | relative_url }}">all papers</a>
+  </div>
+
+  {% if featured_papers.size > 0 %}
+    <div class="paper-grid">
+      {% for paper in featured_papers limit:3 %}
+        {% include paper_card.html paper=paper %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">论文资源区还没有内容，后续可以在 <code>_data/papers.yml</code> 中追加公开论文链接。</p>
+  {% endif %}
+</section>
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>topics</h2>
+      <p>按技术主题整理的公开笔记。</p>
     </div>
   </div>
 
   <div class="category-grid">
-    {% for category in note_categories %}
-      {% assign category_path_parts = category.path | split: '/' %}
-      {% assign category_key = category_path_parts[1] | default: category.title %}
-      {% assign category_notes_count = 0 %}
-      {% assign category_latest_note = nil %}
-
-      {% for note in all_notes %}
-        {% assign note_path_parts = note.path | split: '/' %}
-        {% assign note_directory = note_path_parts[1] | default: '' %}
-        {% if note_directory == category_key %}
-          {% assign category_notes_count = category_notes_count | plus: 1 %}
-          {% if category_latest_note == nil %}
-            {% assign category_latest_note = note %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
+    {% for group in grouped_notes %}
+      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+      {% assign category_latest_note = group.items | first %}
 
       <article class="category-card">
-        <h3>{{ category.title | default: category_key }}</h3>
-        {% if category.description %}
-          <p>{{ category.description }}</p>
-        {% elsif category.excerpt %}
-          <p>{{ category.excerpt | strip_html | truncate: 120 }}</p>
-        {% endif %}
+        <h3>{{ category_meta.title | default: group.name }}</h3>
+        <p>{{ category_meta.description | default: '该主题下的技术笔记。' }}</p>
 
         <div class="category-card__meta">
-          <span>{{ category_notes_count }} 篇笔记</span>
+          <span>{{ group.items.size }} 篇笔记</span>
           {% if category_latest_note %}
             <span>最近更新：<a href="{{ category_latest_note.url | relative_url }}">{{ category_latest_note.title }}</a></span>
           {% endif %}
+          <span><a href="{{ '/notes/#' | append: group.name | relative_url }}">查看该主题</a></span>
         </div>
       </article>
     {% endfor %}
-  </div>
-</section>
-
-<section class="info-section">
-  <div class="section-heading">
-    <div>
-      <h2>notes & writing conventions</h2>
-      <p>尽量保持接近 al-folio 的信息布局，但内容组织仍然按照你的需求使用 `note/` 与 `resources/images/`。</p>
-    </div>
-  </div>
-
-  <div class="info-grid">
-    <div>
-      <h3>笔记目录</h3>
-      <p>把 Markdown 笔记放在 <code>note/</code> 下，可以继续按主题拆分子目录，例如 <code>note/kubernetes/</code>、<code>note/golang/</code>，页面会按真实目录识别分类。</p>
-    </div>
-    <div>
-      <h3>图片目录</h3>
-      <p>把笔记里引用的图片统一放在 <code>resources/images/</code>，推荐使用绝对路径引用，例如 <code>/resources/images/example.png</code>。</p>
-    </div>
-    <div>
-      <h3>渲染能力</h3>
-      <p>默认支持标题、代码块、表格、引用、任务列表、图片、链接与语法高亮。建议每篇笔记都补齐 <code>title</code>、<code>date</code>、<code>summary</code> 等 front matter。</p>
-    </div>
-    <div>
-      <h3>最近更新</h3>
-      {% if latest_note %}
-        <p>最近一篇公开笔记是 <a href="{{ latest_note.url | relative_url }}">{{ latest_note.title }}</a>。</p>
-      {% else %}
-        <p>当前还没有可展示的公开笔记。</p>
-      {% endif %}
-    </div>
   </div>
 </section>

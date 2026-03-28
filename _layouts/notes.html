@@ -3,46 +3,29 @@ layout: default
 ---
 
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
-{% assign note_categories = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name == 'index.md'" | sort: 'title' %}
+{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
   <p>{{ page.description }}</p>
 </section>
 
-{% for category in note_categories %}
-  {% assign category_path_parts = category.path | split: '/' %}
-  {% assign category_key = category_path_parts[1] | default: category.title %}
-  {% assign category_notes_count = 0 %}
+{% for group in grouped_notes %}
+  {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
 
-  {% capture category_notes_markup %}
-    {% for note in all_notes %}
-      {% assign note_path_parts = note.path | split: '/' %}
-      {% assign note_directory = note_path_parts[1] | default: '' %}
-      {% if note_directory == category_key %}
-        {% assign category_notes_count = category_notes_count | plus: 1 %}
-        {% include note_card.html note=note %}
-      {% endif %}
-    {% endfor %}
-  {% endcapture %}
-
-  <section class="list-section" id="{{ category_key }}">
+  <section class="list-section" id="{{ group.name }}">
     <div class="section-heading">
       <div>
-        <h2>{{ category.title | default: category_key }}</h2>
-        {% if category.description %}
-          <p>{{ category.description }}</p>
-        {% elsif category.excerpt %}
-          <p>{{ category.excerpt | strip_html | truncate: 140 }}</p>
-        {% else %}
-          <p>按时间倒序展示 {{ category_key }} 目录下的技术笔记。</p>
-        {% endif %}
+        <h2>{{ category_meta.title | default: group.name }}</h2>
+        <p>{{ category_meta.description | default: '按时间倒序展示该主题下的技术笔记。' }}</p>
       </div>
-      <span class="section-count">{{ category_notes_count }} 篇</span>
+      <span class="section-count">{{ group.items.size }} 篇</span>
     </div>
 
     <div class="note-list">
-      {{ category_notes_markup }}
+      {% for note in group.items %}
+        {% include note_card.html note=note %}
+      {% endfor %}
     </div>
   </section>
 {% endfor %}
