@@ -11,11 +11,17 @@ layout: default
   <p>{{ page.description }}</p>
 </section>
 
+<section class="archive-links-bar">
+  <a href="{{ '/year-archive/' | relative_url }}">Year Archive</a>
+  <a href="{{ '/category-archive/' | relative_url }}">Category Archive</a>
+  <a href="{{ '/tag-archive/' | relative_url }}">Tag Archive</a>
+</section>
+
 <section class="list-section">
   <div class="section-heading">
     <div>
       <h2>topic archive</h2>
-      <p>先按主题快速浏览，再往下按年份查看完整归档。</p>
+      <p>按主题浏览公开笔记，并快速定位最近更新的文章。</p>
     </div>
   </div>
 
@@ -64,8 +70,9 @@ layout: default
   <div class="section-heading">
     <div>
       <h2>year archive</h2>
-      <p>参考 academicpages 的 archive 方式，按年份快速查看所有笔记。</p>
+      <p>按年份回看全部公开笔记，适合快速追踪内容沉淀节奏。</p>
     </div>
+    <a class="section-link" href="{{ '/year-archive/' | relative_url }}">open full year archive</a>
   </div>
 
   {% for year_group in note_year_groups %}

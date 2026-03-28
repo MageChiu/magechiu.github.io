@@ -28,7 +28,7 @@ publication_category:
     description: 大模型系统、分布式训练与自动并行方向论文。
   local-files:
     title: Local Paper Files
-    description: 放在 resources/papers/ 中的本地 PDF 论文文件。
+    description: 站点中归档保存的本地论文与研究资料。
 plugins:
   - jekyll-feed
 email: charles.r.chiu@outlook.com

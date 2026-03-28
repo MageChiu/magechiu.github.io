@@ -47,7 +47,7 @@ func (r *AppClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 ## 一张示意图
 
-下面这张图来自站点资源目录，演示了笔记中图片应当如何统一放置和引用：
+下面这张图概括了这篇入门笔记聚焦的 Operator 学习主题：
 
 ![Operator 入门配图]({{ '/resources/images/operator-cover.jpg' | relative_url }})
 
@@ -66,21 +66,8 @@ func (r *AppClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 - 先把状态机和异常路径想清楚，再开始写 Reconcile。
 - 把观测性做好，包括日志、事件和状态字段。
 
-## Markdown 渲染能力验证
+## 常见误区
 
-- [x] 任务列表
-- [x] 表格
-- [x] 代码块
-- [x] 图片
-- [x] 引用
-
-如果你后续继续写笔记，建议保持如下路径规范：
-
-```text
-note/
-  kubernetes/
-    operator.md
-resources/
-  images/
-    operator-cover.jpg
-```
+- 把 Operator 理解成“高级 Helm Chart”，会忽略它真正的控制器语义。
+- 只关注 CRD 字段，不关注状态机与异常恢复路径，通常会让 Reconcile 逻辑很快失控。
+- 忽略 status、event 和 metrics，后续排障成本会急剧升高。

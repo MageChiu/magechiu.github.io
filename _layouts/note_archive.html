@@ -1,0 +1,78 @@
+---
+layout: default
+---
+
+{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+
+<section class="page-header">
+  <h1>{{ page.title }}</h1>
+  <p>{{ page.description }}</p>
+</section>
+
+<section class="archive-links-bar">
+  <a href="{{ '/notes/' | relative_url }}">Notes Home</a>
+  <a href="{{ '/year-archive/' | relative_url }}">Year Archive</a>
+  <a href="{{ '/category-archive/' | relative_url }}">Category Archive</a>
+  <a href="{{ '/tag-archive/' | relative_url }}">Tag Archive</a>
+</section>
+
+{% if page.archive_type == 'year' %}
+  {% assign grouped_items = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
+{% elsif page.archive_type == 'category' %}
+  {% assign grouped_items = all_notes | group_by_exp: 'item', "item.path | split: '/' | slice: 1, 1 | first" %}
+{% elsif page.archive_type == 'tag' %}
+  {% assign grouped_items = '' | split: '' %}
+  {% assign all_tags = all_notes | map: 'tags' | compact | join: '|' | split: '|' | uniq | sort %}
+{% endif %}
+
+{% if page.archive_type == 'tag' %}
+  {% for tag in all_tags %}
+    {% assign tag_notes = all_notes | where_exp: 'item', "item.tags contains tag" %}
+    {% if tag_notes.size > 0 %}
+      <section class="list-section" id="{{ tag | slugify }}">
+        <div class="section-heading">
+          <div>
+            <h2>{{ tag }}</h2>
+            <p>包含标签“{{ tag }}”的公开技术笔记。</p>
+          </div>
+          <span class="section-count">{{ tag_notes.size }} 篇</span>
+        </div>
+
+        <div class="archive-list">
+          {% for note in tag_notes %}
+            {% include note_card.html note=note %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  {% for group in grouped_items %}
+    {% if page.archive_type == 'category' %}
+      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+      {% assign group_title = category_meta.title | default: group.name %}
+      {% assign group_description = category_meta.description | default: '该主题下的公开技术笔记。' %}
+      {% assign group_id = group.name %}
+    {% else %}
+      {% assign group_title = group.name %}
+      {% assign group_description = '该年份发布的公开技术笔记。' %}
+      {% assign group_id = group.name | slugify %}
+    {% endif %}
+
+    <section class="list-section" id="{{ group_id }}">
+      <div class="section-heading">
+        <div>
+          <h2>{{ group_title }}</h2>
+          <p>{{ group_description }}</p>
+        </div>
+        <span class="section-count">{{ group.items.size }} 篇</span>
+      </div>
+
+      <div class="archive-list">
+        {% for note in group.items %}
+          {% include note_card.html note=note %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+{% endif %}

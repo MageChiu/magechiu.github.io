@@ -292,6 +292,29 @@ pre {
   margin-top: 0.9rem;
 }
 
+.archive-links-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+}
+
+.archive-links-bar a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background: #f7f9fc;
+  border: 1px solid var(--global-divider-color);
+  font-size: 0.85rem;
+}
+
+.archive-links-bar a:hover {
+  text-decoration: none;
+  background: #eef3f8;
+}
+
 .archive-action-link,
 .archive-action-hint {
   display: inline-flex;

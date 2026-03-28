@@ -3,6 +3,8 @@ main:
     url: /
   - title: Notes
     url: /notes/
+  - title: Archive
+    url: /year-archive/
   - title: Publications
     url: /papers/
   - title: GitHub

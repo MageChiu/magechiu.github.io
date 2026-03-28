@@ -25,7 +25,7 @@ layout: default
 
   <div class="markdown-body markdown-body--home">
     {{ content }}
-    <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，保留技术博客的可读性，同时采用更接近 academicpages 的学术主页展示方式。</p>
+    <p>这个站点主要记录云原生、平台工程、自动化与日常技术沉淀，也持续整理值得反复回看的论文与研究资料。</p>
   </div>
 
   <ul class="about-highlights">
@@ -59,7 +59,7 @@ layout: default
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-state">当前目录下还没有公开笔记，你可以在 <code>note/{{ directory_name }}/</code> 中添加新的 Markdown 文件。</p>
+    <p class="empty-state">当前专题下暂时还没有公开笔记。</p>
   {% endif %}
 </section>
 
@@ -67,7 +67,7 @@ layout: default
   <div class="section-heading">
     <div>
       <h2>selected publications</h2>
-      <p>公开维护的论文与本地 PDF 资料入口，展示方式参考 academicpages 的 publications 列表。</p>
+      <p>整理近期最值得回看的系统论文、平台工程论文和本地归档资料。</p>
     </div>
     <a class="section-link" href="{{ '/papers/' | relative_url }}">all papers</a>
   </div>
@@ -79,7 +79,7 @@ layout: default
       {% endfor %}
     </div>
   {% else %}
-    <p class="empty-state">论文资源区还没有内容，后续可以在 <code>_publications/</code> 中追加论文元数据文件。</p>
+    <p class="empty-state">论文资源区暂时还没有公开内容。</p>
   {% endif %}
 </section>
 

@@ -14,6 +14,7 @@
 - 技术笔记主目录：`note/`
 - 笔记图片目录：`resources/images/`
 - 公开论文资源页源码：`resources/papers/index.md`
+- 公开笔记归档页源码：`notes.md`、`year-archive.md`、`category-archive.md`、`tag-archive.md`
 - 论文 collection 元数据：`_publications/`
 - 论文分类配置：`_config.yml` 中的 `publication_category`
 - 笔记分类元信息：`_data/note_categories.yml`

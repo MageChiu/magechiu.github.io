@@ -18,6 +18,9 @@ assets/css/            站点样式
 
 - `index.md`：站点首页
 - `notes.md`：全部笔记页
+- `year-archive.md`：按年份归档的笔记页
+- `category-archive.md`：按主题归档的笔记页
+- `tag-archive.md`：按标签归档的笔记页
 - `resources/papers/index.md`：公开论文资源页
 - `_data/note_categories.yml`：笔记分类配置
 - `_publications/`：论文元数据 collection
