@@ -36,11 +36,16 @@ email: charles.r.chiu@outlook.com
 profile:
   subtitle: 平台工程 / 云原生 / AI 工程化
   avatar: /configs/DSC04369.jpg
-  intro: 持续记录 Kubernetes、工程效率、平台能力建设与个人技术实践。
+  intro: 这里记录 Java、云原生、AI 工程化与日常技术实践中的思考、踩坑和长期沉淀。
+  about: 我会持续分享后端开发、系统设计、工程效率与 AI 应用落地相关内容，希望把复杂问题讲清楚，把有价值的经验留下来。
   location: Shanghai, China
+  wechat_public_account:
+    name: Java和哎呦
+    description: 欢迎关注公众号，获取最新文章更新与技术思考。
+    qr_image: /configs/connect/公众号.jpeg
 
 author:
-  name: Peng Zhao
+  name: Java和哎呦
   github: MageChiu
 
 kramdown:

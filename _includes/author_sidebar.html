@@ -6,10 +6,26 @@
   <h2 class="author-sidebar__name">{{ site.author.name }}</h2>
   <p class="author-sidebar__subtitle">{{ site.profile.subtitle }}</p>
   <p class="author-sidebar__bio">{{ site.profile.intro }}</p>
+  {% if site.profile.about %}
+    <p class="author-sidebar__about">{{ site.profile.about }}</p>
+  {% endif %}
 
   <ul class="author-sidebar__links">
     <li>{{ site.profile.location }}</li>
     <li><a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noreferrer">GitHub</a></li>
     <li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+    {% if site.profile.wechat_public_account %}
+      <li>公众号：{{ site.profile.wechat_public_account.name }}</li>
+    {% endif %}
   </ul>
+
+  {% if site.profile.wechat_public_account %}
+    <section class="author-sidebar__contact-card">
+      <h3 class="author-sidebar__contact-title">公众号</h3>
+      <p class="author-sidebar__contact-text">{{ site.profile.wechat_public_account.description }}</p>
+      <figure class="author-sidebar__qr">
+        <img src="{{ site.profile.wechat_public_account.qr_image | relative_url }}" alt="{{ site.profile.wechat_public_account.name }} 二维码">
+      </figure>
+    </section>
+  {% endif %}
 </section>
