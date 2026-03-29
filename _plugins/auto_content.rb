@@ -36,6 +36,8 @@ module Jekyll
       # 处理本地论文
       process_local_papers
 
+      filter_broken_local_publications
+
       # 生成合并后的论文列表
       generate_merged_papers
 
@@ -341,16 +343,38 @@ module Jekyll
     # 合并论文列表
     # ============================================
 
+    def filter_broken_local_publications
+      return unless @site.collections.key?('publications')
+
+      valid_docs = []
+
+      @site.collections['publications'].docs.each do |doc|
+        local_file_exists = local_paper_file_exists?(doc.data['paperurl'], doc.data['paper_source'])
+        doc.data['local_file_exists'] = local_file_exists
+        doc.data['broken_local_file'] = doc.data['paper_source'] == 'local' && !local_file_exists
+
+        if doc.data['broken_local_file']
+          Jekyll.logger.warn 'AutoContent:', "Skipping missing local paper: #{doc.relative_path} -> #{doc.data['paperurl']}"
+          next
+        end
+
+        valid_docs << doc
+      end
+
+      @site.collections['publications'].docs.replace(valid_docs)
+      @site.pages.reject! do |page|
+        next false unless page.respond_to?(:collection) && page.collection
+
+        page.collection.label == 'publications' && page.data['paper_source'] == 'local' && page.data['broken_local_file'] == true
+      end
+    end
+
     def generate_merged_papers
       merged = []
 
       # 添加现有的 publications
       if @site.collections.key?('publications')
         @site.collections['publications'].docs.each do |doc|
-          local_file_exists = local_paper_file_exists?(doc.data['paperurl'], doc.data['paper_source'])
-          doc.data['local_file_exists'] = local_file_exists
-          doc.data['broken_local_file'] = doc.data['paper_source'] == 'local' && !local_file_exists
-
           merged << doc_to_paper_hash(doc)
         end
       end

@@ -3,8 +3,6 @@
 
 {% comment %}处理自动生成的论文数据结构差异{% endcomment %}
 {% assign is_auto_generated = paper.auto_generated %}
-{% assign local_file_exists = paper.local_file_exists %}
-{% assign broken_local_file = paper.broken_local_file %}
 
 {% if is_auto_generated %}
   {% assign publication_url = paper.pdf_path %}
@@ -12,10 +10,6 @@
 {% else %}
   {% assign publication_url = paper.paperurl | default: paper.url %}
   {% assign details_url = paper.url | default: paper.permalink | default: paper.relative_path %}
-{% endif %}
-
-{% if broken_local_file %}
-  {% assign publication_url = nil %}
 {% endif %}
 
 {% assign title_url = nil %}
@@ -91,8 +85,6 @@
       {% if paper.paper_source == 'local' or is_auto_generated %}
         {% if publication_url %}
           <span class="archive-action-hint">local file</span>
-        {% elsif broken_local_file %}
-          <span class="archive-action-hint">archived file missing</span>
         {% endif %}
       {% endif %}
     </div>
