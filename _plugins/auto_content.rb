@@ -347,6 +347,10 @@ module Jekyll
       # 添加现有的 publications
       if @site.collections.key?('publications')
         @site.collections['publications'].docs.each do |doc|
+          local_file_exists = local_paper_file_exists?(doc.data['paperurl'], doc.data['paper_source'])
+          doc.data['local_file_exists'] = local_file_exists
+          doc.data['broken_local_file'] = doc.data['paper_source'] == 'local' && !local_file_exists
+
           merged << doc_to_paper_hash(doc)
         end
       end
@@ -371,6 +375,10 @@ module Jekyll
     end
 
     def doc_to_paper_hash(doc)
+      paperurl = doc.data['paperurl']
+      paper_source = doc.data['paper_source']
+      local_file_exists = local_paper_file_exists?(paperurl, paper_source)
+
       {
         'id' => doc.basename_without_ext,
         'title' => doc.data['title'],
@@ -379,17 +387,30 @@ module Jekyll
         'authors' => doc.data['authors'],
         'venue' => doc.data['venue'],
         'category' => doc.data['category'],
-        'paperurl' => doc.data['paperurl'],
-        'paper_source' => doc.data['paper_source'],
+        'paperurl' => paperurl,
+        'paper_source' => paper_source,
         'excerpt' => doc.data['excerpt'] || doc.data['summary'],
         'summary' => doc.data['summary'],
         'citation' => doc.data['citation'],
         'tags' => doc.data['tags'] || [],
         'featured' => doc.data['featured'] || false,
         'url' => doc.url,
+        'local_file_exists' => local_file_exists,
+        'broken_local_file' => paper_source == 'local' && !local_file_exists,
         'doc' => doc,
         'auto_generated' => false
       }
+    end
+
+    def local_paper_file_exists?(paperurl, paper_source)
+      return true unless paper_source == 'local'
+      return false if paperurl.nil? || paperurl.to_s.strip.empty?
+
+      normalized_path = CGI.unescape(paperurl.to_s.split('?').first)
+      relative_path = normalized_path.sub(%r{^/}, '')
+      file_path = Pathname.new(@site.source) / relative_path
+
+      file_path.file?
     end
   end
 

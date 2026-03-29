@@ -3,6 +3,8 @@
 
 {% comment %}处理自动生成的论文数据结构差异{% endcomment %}
 {% assign is_auto_generated = paper.auto_generated %}
+{% assign local_file_exists = paper.local_file_exists %}
+{% assign broken_local_file = paper.broken_local_file %}
 
 {% if is_auto_generated %}
   {% assign publication_url = paper.pdf_path %}
@@ -11,6 +13,18 @@
   {% assign publication_url = paper.paperurl | default: paper.url %}
   {% assign details_url = paper.url | default: paper.permalink | default: paper.relative_path %}
 {% endif %}
+
+{% if broken_local_file %}
+  {% assign publication_url = nil %}
+{% endif %}
+
+{% assign title_url = nil %}
+{% if publication_url != blank %}
+  {% assign title_url = publication_url %}
+{% elsif paper.url != blank %}
+  {% assign title_url = paper.url %}
+{% endif %}
+
 
 {% assign has_external_link = false %}
 {% if publication_url contains '://' or publication_url contains '.pdf' or publication_url contains '/resources/papers/' %}
@@ -31,7 +45,11 @@
 
   <div class="archive-item__content">
     <h3>
-      <a href="{% if publication_url contains '://' %}{{ publication_url }}{% else %}{{ publication_url | relative_url }}{% endif %}" target="_blank" rel="noreferrer">{{ paper.title }}</a>
+      {% if title_url %}
+        <a href="{% if title_url contains '://' %}{{ title_url }}{% else %}{{ title_url | relative_url }}{% endif %}"{% if publication_url %} target="_blank" rel="noreferrer"{% endif %}>{{ paper.title }}</a>
+      {% else %}
+        {{ paper.title }}
+      {% endif %}
     </h3>
 
     {% if paper.authors %}
@@ -73,6 +91,8 @@
       {% if paper.paper_source == 'local' or is_auto_generated %}
         {% if publication_url %}
           <span class="archive-action-hint">local file</span>
+        {% elsif broken_local_file %}
+          <span class="archive-action-hint">archived file missing</span>
         {% endif %}
       {% endif %}
     </div>

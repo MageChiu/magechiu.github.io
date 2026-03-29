@@ -7,9 +7,11 @@ layout: default
     <h1>{{ page.title }}</h1>
     <p class="note-hero__subtitle">publication / {{ page.category }}</p>
 
+    {% assign local_file_missing = page.broken_local_file %}
+
     <div class="note-hero__actions archive-actions">
       <a class="archive-action-link" href="{{ '/papers/' | relative_url }}">All publications</a>
-      {% if page.paperurl %}
+      {% if page.paperurl and local_file_missing == false %}
         <a class="archive-action-link" href="{% if page.paperurl contains '://' %}{{ page.paperurl }}{% else %}{{ page.paperurl | relative_url }}{% endif %}" target="_blank" rel="noreferrer">
           {% if page.paper_source == 'local' %}Open PDF{% else %}Open paper{% endif %}
         </a>
@@ -35,8 +37,10 @@ layout: default
       <p>{{ page.excerpt }}</p>
     {% endif %}
 
-    {% if page.paper_source == 'local' %}
+    {% if page.paper_source == 'local' and local_file_missing == false %}
       <p><strong>Source:</strong> This entry links to a PDF preserved in the site archive.</p>
+    {% elsif local_file_missing %}
+      <p><strong>Source:</strong> The archived local PDF is currently unavailable. The metadata entry is retained to avoid breaking the publication record.</p>
     {% endif %}
 
     {% if page.citation %}
@@ -44,7 +48,7 @@ layout: default
     {% endif %}
 
     <p>
-      {% if page.paperurl %}
+      {% if page.paperurl and local_file_missing == false %}
         <a href="{% if page.paperurl contains '://' %}{{ page.paperurl }}{% else %}{{ page.paperurl | relative_url }}{% endif %}" target="_blank" rel="noreferrer">Read paper</a>
       {% endif %}
     </p>
