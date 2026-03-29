@@ -2,20 +2,39 @@
 layout: default
 ---
 
+{% comment %}
+  使用自动生成的数据（如果可用），否则回退到传统方式
+{% endcomment %}
+{% assign auto_topics = site.data.auto_note_topics %}
+{% assign auto_papers = site.data.auto_merged_papers %}
+{% assign use_auto_data = false %}
+{% if auto_topics.size > 0 %}{% assign use_auto_data = true %}{% endif %}
+
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
 {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
-{% assign all_papers = site.publications | sort: 'date' | reverse %}
-{% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
-{% assign home_notes_count = 0 %}
 
-{% for note in all_notes %}
-  {% assign note_path_parts = note.path | split: '/' %}
-  {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
-  {% if note_directory == directory_name %}
-    {% assign home_notes_count = home_notes_count | plus: 1 %}
-  {% endif %}
-{% endfor %}
+{% comment %}使用合并后的论文数据（包含自动识别的本地PDF）{% endcomment %}
+{% if auto_papers and auto_papers.size > 0 %}
+  {% assign all_papers = auto_papers %}
+  {% assign featured_papers = auto_papers | where: 'featured', true %}
+{% else %}
+  {% assign all_papers = site.publications | sort: 'date' | reverse %}
+  {% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
+{% endif %}
+
+{% assign home_notes_count = 0 %}
+{% if use_auto_data and auto_topics[directory_name] %}
+  {% assign home_notes_count = auto_topics[directory_name].note_count %}
+{% else %}
+  {% for note in all_notes %}
+    {% assign note_path_parts = note.path | split: '/' %}
+    {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
+    {% if note_directory == directory_name %}
+      {% assign home_notes_count = home_notes_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 <section class="academic-hero">
   <div class="page-heading">
@@ -39,9 +58,17 @@ layout: default
 <section class="list-section" id="current-directory">
   <div class="section-heading">
     <div>
-      {% assign current_directory_meta = site.data.note_categories | where: 'key', directory_name | first %}
-      <h2>{{ current_directory_meta.title | default: directory_name }}</h2>
-      <p>{{ current_directory_meta.description | default: '当前专题的最新技术笔记。' }}</p>
+      {% comment %}优先使用自动生成的主题数据{% endcomment %}
+      {% if use_auto_data and auto_topics[directory_name] %}
+        {% assign current_directory_title = auto_topics[directory_name].title %}
+        {% assign current_directory_description = auto_topics[directory_name].description %}
+      {% else %}
+        {% assign current_directory_meta = site.data.note_categories | where: 'key', directory_name | first %}
+        {% assign current_directory_title = current_directory_meta.title | default: directory_name %}
+        {% assign current_directory_description = current_directory_meta.description | default: '当前专题的最新技术笔记。' %}
+      {% endif %}
+      <h2>{{ current_directory_title }}</h2>
+      <p>{{ current_directory_description }}</p>
     </div>
     <a class="section-link" href="{{ '/notes/' | relative_url }}">all notes</a>
   </div>
@@ -93,17 +120,33 @@ layout: default
 
   <div class="category-grid">
     {% for group in grouped_notes %}
-      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-      {% assign category_latest_note = group.items | first %}
+      {% comment %}优先使用自动生成的主题数据{% endcomment %}
+      {% assign auto_topic = auto_topics[group.name] %}
+      {% if auto_topic %}
+        {% assign card_title = auto_topic.title %}
+        {% assign card_description = auto_topic.description %}
+        {% assign card_note_count = auto_topic.note_count %}
+        {% assign card_latest = auto_topic.latest_note %}
+      {% else %}
+        {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+        {% assign card_title = category_meta.title | default: group.name %}
+        {% assign card_description = category_meta.description | default: '该主题下的技术笔记。' %}
+        {% assign card_note_count = group.items.size %}
+        {% assign card_latest = group.items | first %}
+      {% endif %}
 
       <article class="category-card">
-        <h3>{{ category_meta.title | default: group.name }}</h3>
-        <p>{{ category_meta.description | default: '该主题下的技术笔记。' }}</p>
+        <h3>{{ card_title }}</h3>
+        <p>{{ card_description }}</p>
 
         <div class="category-card__meta">
-          <span>{{ group.items.size }} 篇笔记</span>
-          {% if category_latest_note %}
-            <span>最近更新：<a href="{{ category_latest_note.url | relative_url }}">{{ category_latest_note.title }}</a></span>
+          <span>{{ card_note_count }} 篇笔记</span>
+          {% if card_latest %}
+            {% if card_latest.url %}
+              <span>最近更新：<a href="{{ card_latest.url | relative_url }}">{{ card_latest.title }}</a></span>
+            {% else %}
+              <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: card_latest.filename | relative_url }}">{{ card_latest.title }}</a></span>
+            {% endif %}
           {% endif %}
           <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">查看该主题</a></span>
         </div>

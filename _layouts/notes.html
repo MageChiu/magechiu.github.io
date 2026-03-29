@@ -2,8 +2,21 @@
 layout: default
 ---
 
+{% comment %}
+  使用自动生成的主题数据（如果可用），否则回退到传统方式
+{% endcomment %}
+{% assign auto_topics = site.data.auto_note_topics %}
+{% assign use_auto_topics = false %}
+{% if auto_topics.size > 0 %}{% assign use_auto_topics = true %}{% endif %}
+
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
-{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
+
+{% if use_auto_topics %}
+  {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
+{% else %}
+  {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
+{% endif %}
+
 {% assign note_year_groups = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 
 <section class="page-header">
@@ -27,17 +40,33 @@ layout: default
 
   <div class="category-grid">
     {% for group in grouped_notes %}
-      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-      {% assign latest_note = group.items | first %}
+      {% comment %}优先使用自动生成的主题数据{% endcomment %}
+      {% assign auto_topic = auto_topics[group.name] %}
+      {% if auto_topic %}
+        {% assign topic_title = auto_topic.title %}
+        {% assign topic_description = auto_topic.description %}
+        {% assign topic_note_count = auto_topic.note_count %}
+        {% assign topic_latest = auto_topic.latest_note %}
+      {% else %}
+        {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+        {% assign topic_title = category_meta.title | default: group.name %}
+        {% assign topic_description = category_meta.description | default: '按主题整理的技术笔记归档。' %}
+        {% assign topic_note_count = group.items.size %}
+        {% assign topic_latest = group.items | first %}
+      {% endif %}
 
       <article class="category-card">
-        <h3>{{ category_meta.title | default: group.name }}</h3>
-        <p>{{ category_meta.description | default: '按主题整理的技术笔记归档。' }}</p>
+        <h3>{{ topic_title }}</h3>
+        <p>{{ topic_description }}</p>
 
         <div class="category-card__meta">
-          <span>{{ group.items.size }} 篇笔记</span>
-          {% if latest_note %}
-            <span>最近更新：<a href="{{ latest_note.url | relative_url }}">{{ latest_note.title }}</a></span>
+          <span>{{ topic_note_count }} 篇笔记</span>
+          {% if topic_latest %}
+            {% if topic_latest.url %}
+              <span>最近更新：<a href="{{ topic_latest.url | relative_url }}">{{ topic_latest.title }}</a></span>
+            {% else %}
+              <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: topic_latest.filename | relative_url }}">{{ topic_latest.title }}</a></span>
+            {% endif %}
           {% endif %}
           <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">进入主题页</a></span>
         </div>
@@ -47,13 +76,22 @@ layout: default
 </section>
 
 {% for group in grouped_notes %}
-  {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+  {% comment %}优先使用自动生成的主题数据{% endcomment %}
+  {% assign auto_topic = auto_topics[group.name] %}
+  {% if auto_topic %}
+    {% assign section_title = auto_topic.title %}
+    {% assign section_description = auto_topic.description %}
+  {% else %}
+    {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+    {% assign section_title = category_meta.title | default: group.name %}
+    {% assign section_description = category_meta.description | default: '按时间倒序展示该主题下的技术笔记。' %}
+  {% endif %}
 
   <section class="list-section" id="{{ group.name }}">
     <div class="section-heading">
       <div>
-        <h2>{{ category_meta.title | default: group.name }}</h2>
-        <p>{{ category_meta.description | default: '按时间倒序展示该主题下的技术笔记。' }}</p>
+        <h2>{{ section_title }}</h2>
+        <p>{{ section_description }}</p>
       </div>
       <span class="section-count">{{ group.items.size }} 篇</span>
     </div>

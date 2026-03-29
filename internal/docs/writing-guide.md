@@ -51,7 +51,12 @@ resources/images/
 
 ## 三、论文资源规范
 
-公开展示的论文列表改为使用 `_publications/` collection 维护。建议每篇论文使用独立 Markdown 元数据文件，并包含：
+公开展示的论文列表优先由目录自动识别：
+
+- `_publications/`：维护带完整元数据的论文条目
+- `resources/papers/`：自动识别本地 PDF，并在没有对应 `_publications/*.md` 时自动出现在 `/papers/`
+
+如果你希望某篇论文拥有更完整的信息（例如作者、摘要、引用、详情页、featured 展示），建议继续创建 `_publications/*.md` 元数据文件，并包含：
 
 - `title`
 - `collection: publications`
@@ -71,11 +76,27 @@ resources/images/
 resources/papers/
 ```
 
-如果 `resources/papers/` 里新增了本地 PDF，推荐同步新增一个 `_publications/*.md` 条目，这样它会自动出现在公开的 Publications 页面和首页精选论文区域中。
+如果 `resources/papers/` 里只是新增了本地 PDF，现在**不再需要**同步补 `_publications/*.md` 才能被识别；构建时会自动生成基础条目。
+
+只有在你需要以下能力时，才建议补 `_publications/*.md`：
+
+- 自定义标题
+- 自定义分类 `category`
+- 自定义摘要、作者、引用
+- 独立详情页 `/publication/.../`
+- 首页 featured 展示
 
 ## 四、分类元信息规范
 
-不要再使用 `note/<目录>/index.md` 这种公开页面承载说明。分类标题与描述统一写在：
+`note/` 下新增主题目录后，系统会在构建时自动识别主题，并在缺少物理 `index.md` 时自动生成专题页。
+
+如果你只需要基础展示，可以直接新增：
+
+```text
+note/<topic>/<article>.md
+```
+
+如果你想自定义专题标题和描述，仍然推荐维护：
 
 ```text
 _data/note_categories.yml
@@ -89,7 +110,7 @@ _data/note_categories.yml
   description: 记录 Kubernetes、Operator、GPU 调度与云原生基础设施相关的长期技术笔记。
 ```
 
-如果某个目录没有配置分类元信息，公开页面仍可展示文章，只是目录名称会回退到原始文件夹名。
+如果某个目录没有配置分类元信息，公开页面仍可展示文章，只是标题与描述会回退到自动生成值。
 
 ## 五、不要公开的内容
 

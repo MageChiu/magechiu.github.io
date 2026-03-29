@@ -18,14 +18,17 @@
 - 论文 collection 元数据：`_publications/`
 - 论文分类配置：`_config.yml` 中的 `publication_category`
 - 笔记分类元信息：`_data/note_categories.yml`
+- 自动内容识别插件：`_plugins/auto_content.rb`
 - 首页专题目录：由 `_config.yml` 中的 `homepage_note_directory` 控制
 - 内部维护文档：统一放在 `internal/` 下，并通过 `_config.yml` 排除发布
 
 ## 推荐维护顺序
 
 1. 先在 `note/`、`_publications/` 或 `resources/papers/` 中更新内容。
-2. 如需新增目录或展示逻辑，同时更新 `internal/docs/directory-structure.md`。
-3. 本地执行构建验证。
-4. 检查 GitHub Actions 的 `verify.yml` 与 `pages.yml` 是否通过。
+2. 新增 note 主题目录或本地 PDF 后，优先直接运行构建验证自动识别结果。
+3. 只有在需要更完整元数据时，才补 `_publications/*.md` 或 `_data/note_categories.yml`。
+4. 如需新增目录或展示逻辑，同时更新 `internal/docs/directory-structure.md`。
+5. 本地执行构建验证。
+6. 检查 GitHub Actions 的 `verify.yml` 与 `pages.yml` 是否通过。
 
 如果后续站点结构再次调整，优先更新以上拆分后的四份文档，而不是把所有说明重新堆回一个文件。

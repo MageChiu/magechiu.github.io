@@ -1,7 +1,17 @@
 {% assign paper = include.paper %}
 {% assign card_variant = include.variant | default: 'default' %}
-{% assign publication_url = paper.paperurl | default: paper.url %}
-{% assign details_url = paper.url | default: paper.permalink | default: paper.relative_path %}
+
+{% comment %}处理自动生成的论文数据结构差异{% endcomment %}
+{% assign is_auto_generated = paper.auto_generated %}
+
+{% if is_auto_generated %}
+  {% assign publication_url = paper.pdf_path %}
+  {% assign details_url = paper.pdf_path %}
+{% else %}
+  {% assign publication_url = paper.paperurl | default: paper.url %}
+  {% assign details_url = paper.url | default: paper.permalink | default: paper.relative_path %}
+{% endif %}
+
 {% assign has_external_link = false %}
 {% if publication_url contains '://' or publication_url contains '.pdf' or publication_url contains '/resources/papers/' %}
   {% assign has_external_link = true %}
@@ -51,16 +61,19 @@
     {% endif %}
 
     <div class="archive-actions">
-      {% if paper.url %}
+      {% comment %}自动生成的论文没有详情页，只有PDF链接{% endcomment %}
+      {% if paper.url and is_auto_generated == false %}
         <a class="archive-action-link" href="{{ paper.url | relative_url }}">Details</a>
       {% endif %}
       {% if publication_url %}
         <a class="archive-action-link" href="{% if publication_url contains '://' %}{{ publication_url }}{% else %}{{ publication_url | relative_url }}{% endif %}" target="_blank" rel="noreferrer">
-          {% if paper.paper_source == 'local' %}Open PDF{% else %}Paper Link{% endif %}
+          {% if paper.paper_source == 'local' or is_auto_generated %}Open PDF{% else %}Paper Link{% endif %}
         </a>
       {% endif %}
-      {% if paper.paper_source == 'local' and publication_url %}
-        <span class="archive-action-hint">local file</span>
+      {% if paper.paper_source == 'local' or is_auto_generated %}
+        {% if publication_url %}
+          <span class="archive-action-hint">local file</span>
+        {% endif %}
       {% endif %}
     </div>
   </div>

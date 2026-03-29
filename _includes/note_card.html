@@ -1,7 +1,14 @@
 <article class="note-card archive-item">
   {% assign note_path_parts = include.note.path | split: '/' %}
   {% assign note_directory = include.note.section | default: note_path_parts[1] | default: '未分类' %}
-  {% assign note_directory_meta = site.data.note_categories | where: 'key', note_directory | first %}
+
+  {% comment %}优先使用自动生成的主题数据{% endcomment %}
+  {% assign auto_topic = site.data.auto_note_topics[note_directory] %}
+  {% if auto_topic %}
+    {% assign note_directory_meta = auto_topic %}
+  {% else %}
+    {% assign note_directory_meta = site.data.note_categories | where: 'key', note_directory | first %}
+  {% endif %}
   <div class="note-card__meta archive-item__meta">
     {% if include.note.date %}
       <span>{{ include.note.date | date: '%Y-%m-%d' }}</span>

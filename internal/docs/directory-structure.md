@@ -45,18 +45,20 @@ internal/docs/
 
 ### 当前笔记结构约定
 
-- 推荐目录结构：`note/<topic>/index.md` + `note/<topic>/<slug>.md`
+- 推荐目录结构：`note/<topic>/<slug>.md`
+- 如需自定义专题说明，可额外维护 `note/<topic>/index.md`
 - 主题归类优先读取 Front Matter 中的 `section` 字段，缺失时回退到目录名
-- `_data/note_categories.yml` 中的 `key` 需要与专题页和 `section` 保持一致
+- `_data/note_categories.yml` 中的 `key` 可选；存在时用于覆盖自动识别的标题与描述
 
 ### 论文资源
 
 1. `_publications/` 保存公开展示的论文元数据。
-2. `resources/papers/` 保存本地 PDF 等论文资源文件。
+2. `resources/papers/` 保存本地 PDF 等论文资源文件，并在构建时自动识别未登记的本地 PDF。
 3. `resources/papers/index.md` 提供公开入口页。
-4. `_layouts/papers.html` 负责论文资源页布局。
-5. `_includes/paper_card.html` 负责论文卡片渲染。
-6. `_layouts/home.html` 首页展示精选论文预览。
+4. `_plugins/auto_content.rb` 负责自动识别 note 主题与本地 PDF。
+5. `_layouts/papers.html` 负责论文资源页布局。
+6. `_includes/paper_card.html` 负责论文卡片渲染。
+7. `_layouts/home.html` 首页展示精选论文预览。
 
 ## 四、后续扩展建议
 

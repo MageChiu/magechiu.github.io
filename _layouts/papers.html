@@ -2,8 +2,20 @@
 layout: default
 ---
 
-{% assign all_papers = site.publications | sort: 'date' | reverse %}
-{% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
+{% comment %}
+  使用自动生成的合并论文数据（包含本地PDF），如果可用
+{% endcomment %}
+{% assign auto_papers = site.data.auto_merged_papers %}
+{% assign use_auto_papers = false %}
+{% if auto_papers.size > 0 %}{% assign use_auto_papers = true %}{% endif %}
+
+{% if use_auto_papers %}
+  {% assign all_papers = auto_papers %}
+  {% assign featured_papers = auto_papers | where: 'featured', true %}
+{% else %}
+  {% assign all_papers = site.publications | sort: 'date' | reverse %}
+  {% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
+{% endif %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>

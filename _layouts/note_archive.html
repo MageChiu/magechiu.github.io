@@ -2,6 +2,13 @@
 layout: default
 ---
 
+{% comment %}
+  使用自动生成的主题数据（如果可用），否则回退到传统方式
+{% endcomment %}
+{% assign auto_topics = site.data.auto_note_topics %}
+{% assign use_auto_topics = false %}
+{% if auto_topics.size > 0 %}{% assign use_auto_topics = true %}{% endif %}
+
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
 
 <section class="page-header">
@@ -49,9 +56,16 @@ layout: default
 {% else %}
   {% for group in grouped_items %}
     {% if page.archive_type == 'category' %}
-      {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-      {% assign group_title = category_meta.title | default: group.name %}
-      {% assign group_description = category_meta.description | default: '该主题下的公开技术笔记。' %}
+      {% comment %}优先使用自动生成的主题数据{% endcomment %}
+      {% assign auto_topic = auto_topics[group.name] %}
+      {% if auto_topic %}
+        {% assign group_title = auto_topic.title %}
+        {% assign group_description = auto_topic.description %}
+      {% else %}
+        {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
+        {% assign group_title = category_meta.title | default: group.name %}
+        {% assign group_description = category_meta.description | default: '该主题下的公开技术笔记。' %}
+      {% endif %}
       {% assign group_id = group.name %}
     {% else %}
       {% assign group_title = group.name %}
