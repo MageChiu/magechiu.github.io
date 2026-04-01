@@ -127,12 +127,20 @@ module Jekyll
         topics[topic_key] << note if topic_key
       end
 
-      # 按日期倒序排序
+      # 按日期倒序排序（统一转换为 Date 对象进行比较）
       topics.each do |_, notes|
-        notes.sort_by! { |n| n['front_matter']['date'] || n['mtime'] }.reverse!
+        notes.sort_by! { |n| normalize_note_date(n) }.reverse!
       end
 
       topics
+    end
+
+    # 标准化笔记日期，统一转换为 Date 对象
+    def normalize_note_date(note)
+      date = note['front_matter']['date']
+      return normalize_date(date) if date
+      return normalize_date(note['mtime']) if note['mtime']
+      Date.new(1970, 1, 1)
     end
 
     def build_topic_data(topic_key, notes)
