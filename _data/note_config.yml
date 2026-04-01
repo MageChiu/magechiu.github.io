@@ -1,0 +1,21 @@
+# Note 配置文件
+# 控制哪些笔记文件暂时不在主题页面展示
+
+# 隐藏的笔记文件列表（相对于 note 目录的路径）
+# 示例：
+# - scheduler/k8s-scheduler-vs-volcano.md
+# - kubernetes/some-draft-note.md
+hidden_notes:
+  # - scheduler/k8s-scheduler-vs-volcano.md  # 示例：取消注释以隐藏此文件
+
+# 隐藏的主题列表（整个主题目录不展示）
+hidden_topics:
+  # - some-topic  # 示例：取消注释以隐藏整个主题
+
+# 草稿标记（包含这些关键词的文件将被标记为草稿）
+draft_keywords:
+  - draft
+  - wip
+  - work-in-progress
+  - temp
+  - todo

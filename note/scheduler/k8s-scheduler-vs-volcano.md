@@ -1,3 +1,15 @@
+---
+title: Kubernetes 默认调度器 vs Volcano 调度器：系统性对比
+date: 2026-03-28
+section: scheduler
+summary: 从架构设计、调度模型、核心能力、适用场景等维度，对 Kubernetes 原生调度器和 Volcano 调度器进行系统性对比分析。
+tags:
+  - kubernetes
+  - volcano
+  - scheduling
+  - comparison
+---
+
 # Kubernetes 默认调度器 vs Volcano 调度器：系统性对比
 
 > 本文从架构设计、调度模型、核心能力、适用场景等维度，对 Kubernetes 原生调度器（kube-scheduler）和 Volcano 调度器进行系统性对比分析。

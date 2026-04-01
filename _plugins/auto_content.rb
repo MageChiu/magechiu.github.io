@@ -73,18 +73,22 @@ module Jekyll
 
     def scan_note_files(note_dir)
       notes = []
+      config = load_note_config
 
       note_dir.children.each do |entry|
         next unless entry.directory?
 
         topic_key = entry.basename.to_s
 
-        # 扫描该主题下的所有 markdown 文件
+        next if should_hide_topic?(topic_key, config)
+
         entry.children.sort.each do |md_file|
           next unless md_file.file? && md_file.extname.downcase == '.md'
           next if md_file.basename.to_s == 'index.md'
 
-          # 读取 front matter
+          relative_path = md_file.relative_path_from(Pathname.new(@site.source) / 'note').to_s
+          next if should_hide_note?(relative_path, config)
+
           front_matter = read_front_matter(md_file)
           next unless front_matter
 
@@ -99,6 +103,20 @@ module Jekyll
       end
 
       notes
+    end
+
+    def load_note_config
+      @site.data['note_config'] || {}
+    end
+
+    def should_hide_topic?(topic_key, config)
+      hidden_topics = config['hidden_topics'] || []
+      hidden_topics.include?(topic_key)
+    end
+
+    def should_hide_note?(relative_path, config)
+      hidden_notes = config['hidden_notes'] || []
+      hidden_notes.any? { |pattern| relative_path == pattern || File.fnmatch?(pattern, relative_path) }
     end
 
     # 读取文件的 front matter
