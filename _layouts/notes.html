@@ -9,15 +9,34 @@ layout: default
 {% assign use_auto_topics = false %}
 {% if auto_topics.size > 0 %}{% assign use_auto_topics = true %}{% endif %}
 
+{% assign note_config = site.data.note_config | default: site.data.note_config %}
+
+{% comment %}获取所有笔记并过滤隐藏的笔记{% endcomment %}
 {% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+{% assign visible_notes = '' | split: '' %}
+{% for note in all_notes %}
+  {% assign note_relative_path = note.path | remove_first: 'note/' %}
+  {% assign is_hidden = false %}
+  {% if note_config.hidden_notes %}
+    {% for hidden_path in note_config.hidden_notes %}
+      {% if note_relative_path == hidden_path %}
+        {% assign is_hidden = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% unless is_hidden %}
+    {% assign visible_notes = visible_notes | push: note %}
+  {% endunless %}
+{% endfor %}
 
 {% if use_auto_topics %}
-  {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
+  {% assign grouped_notes = visible_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 {% else %}
-  {% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
+  {% assign grouped_notes = visible_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 {% endif %}
 
-{% assign note_year_groups = all_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
+{% assign note_year_groups = visible_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
@@ -62,10 +81,22 @@ layout: default
         <div class="category-card__meta">
           <span>{{ topic_note_count }} 篇笔记</span>
           {% if topic_latest %}
-            {% if topic_latest.url %}
-              <span>最近更新：<a href="{{ topic_latest.url | relative_url }}">{{ topic_latest.title }}</a></span>
-            {% else %}
-              <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: topic_latest.filename | relative_url }}">{{ topic_latest.title }}</a></span>
+            {% assign show_latest = true %}
+            {% if note_config.hidden_notes and topic_latest.path %}
+              {% assign latest_relative_path = topic_latest.path | remove_first: 'note/' %}
+              {% for hidden_path in note_config.hidden_notes %}
+                {% if latest_relative_path == hidden_path %}
+                  {% assign show_latest = false %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% if show_latest %}
+              {% if topic_latest.url %}
+                <span>最近更新：<a href="{{ topic_latest.url | relative_url }}">{{ topic_latest.title }}</a></span>
+              {% else %}
+                <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: topic_latest.filename | relative_url }}">{{ topic_latest.title }}</a></span>
+              {% endif %}
             {% endif %}
           {% endif %}
           <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">进入主题页</a></span>

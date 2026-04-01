@@ -1,0 +1,59 @@
+---
+layout: default
+---
+
+{% assign category_key = page.paper_category %}
+{% assign category_meta = site.publication_category[category_key] %}
+{% assign auto_papers = site.data.auto_merged_papers %}
+
+{% if auto_papers.size > 0 %}
+  {% assign all_papers = auto_papers %}
+{% else %}
+  {% assign all_papers = site.publications | sort: 'date' | reverse %}
+{% endif %}
+
+{% assign category_papers = all_papers | where: 'category', category_key %}
+
+<section class="page-header">
+  <h1>{{ page.title | default: category_meta.title }}</h1>
+  <p>{{ page.description | default: category_meta.description }}</p>
+</section>
+
+<nav class="archive-links-bar">
+  <a href="{{ '/papers/' | relative_url }}">All Papers</a>
+  {% for cat in site.publication_category %}
+    {% assign cat_key = cat[0] %}
+    {% assign cat_meta = cat[1] %}
+    {% if cat_key == category_key %}
+      <span class="archive-link--active">{{ cat_meta.title }}</span>
+    {% else %}
+      <a href="{{ '/papers/' | append: cat_key | append: '/' | relative_url }}">{{ cat_meta.title }}</a>
+    {% endif %}
+  {% endfor %}
+</nav>
+
+{% if content and content != '' %}
+  <section class="info-section markdown-body markdown-body--compact">
+    {{ content }}
+  </section>
+{% endif %}
+
+<section class="list-section">
+  <div class="section-heading">
+    <div>
+      <h2>{{ category_meta.title }}</h2>
+      <p>{{ category_meta.description }}</p>
+    </div>
+    <span class="section-count">{{ category_papers.size }} 篇</span>
+  </div>
+
+  {% if category_papers.size > 0 %}
+    <div class="archive-list">
+      {% for paper in category_papers %}
+        {% include paper_card.html paper=paper variant='compact' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">当前分类下暂时还没有论文。</p>
+  {% endif %}
+</section>

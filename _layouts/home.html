@@ -76,12 +76,25 @@ layout: default
   {% if home_notes_count > 0 %}
     <div class="note-list">
       {% assign rendered_home_notes = 0 %}
+      {% assign note_config = site.data.note_config | default: site.data.note_config %}
       {% for note in all_notes %}
         {% assign note_path_parts = note.path | split: '/' %}
         {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
         {% if note_directory == directory_name and rendered_home_notes < 6 %}
-          {% include note_card.html note=note %}
-          {% assign rendered_home_notes = rendered_home_notes | plus: 1 %}
+          {% assign note_relative_path = note.path | remove_first: 'note/' %}
+          {% assign is_hidden = false %}
+          {% if note_config.hidden_notes %}
+            {% for hidden_path in note_config.hidden_notes %}
+              {% if note_relative_path == hidden_path %}
+                {% assign is_hidden = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% unless is_hidden %}
+            {% include note_card.html note=note %}
+            {% assign rendered_home_notes = rendered_home_notes | plus: 1 %}
+          {% endunless %}
         {% endif %}
       {% endfor %}
     </div>
@@ -119,8 +132,8 @@ layout: default
   </div>
 
   <div class="category-grid">
+    {% assign note_config = site.data.note_config | default: site.data.note_config %}
     {% for group in grouped_notes %}
-      {% comment %}优先使用自动生成的主题数据{% endcomment %}
       {% assign auto_topic = auto_topics[group.name] %}
       {% if auto_topic %}
         {% assign card_title = auto_topic.title %}
@@ -142,10 +155,22 @@ layout: default
         <div class="category-card__meta">
           <span>{{ card_note_count }} 篇笔记</span>
           {% if card_latest %}
-            {% if card_latest.url %}
-              <span>最近更新：<a href="{{ card_latest.url | relative_url }}">{{ card_latest.title }}</a></span>
-            {% else %}
-              <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: card_latest.filename | relative_url }}">{{ card_latest.title }}</a></span>
+            {% assign show_latest = true %}
+            {% if note_config.hidden_notes %}
+              {% assign latest_relative_path = card_latest.path | remove_first: 'note/' %}
+              {% for hidden_path in note_config.hidden_notes %}
+                {% if latest_relative_path == hidden_path %}
+                  {% assign show_latest = false %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {% if show_latest %}
+              {% if card_latest.url %}
+                <span>最近更新：<a href="{{ card_latest.url | relative_url }}">{{ card_latest.title }}</a></span>
+              {% else %}
+                <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: card_latest.filename | relative_url }}">{{ card_latest.title }}</a></span>
+              {% endif %}
             {% endif %}
           {% endif %}
           <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">查看该主题</a></span>

@@ -26,9 +26,9 @@ publication_category:
   ai-systems:
     title: AI Systems Papers
     description: 大模型系统、分布式训练与自动并行方向论文。
-  local-files:
-    title: Local Paper Files
-    description: 站点中归档保存的本地论文与研究资料。
+  archive:
+    title: Archived Papers
+    description: 本地归档的研究资料与论文 PDF。
 plugins:
   - jekyll-feed
 email: charles.r.chiu@outlook.com

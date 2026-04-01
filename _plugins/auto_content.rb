@@ -599,3 +599,30 @@ end
 
 # 注册过滤器
 Liquid::Template.register_filter(Jekyll::AutoContentFilters)
+
+# ============================================
+# 隐藏笔记页面移除钩子
+# ============================================
+
+Jekyll::Hooks.register :site, :post_read do |site|
+  # 在读取完所有文件后，移除配置为隐藏的笔记页面
+  config = site.data['note_config'] || {}
+  hidden_notes = config['hidden_notes'] || []
+  
+  next if hidden_notes.empty?
+  
+  # 过滤掉隐藏的笔记页面
+  site.pages.reject! do |page|
+    next false unless page.path&.start_with?('note/')
+    next false if page.name == 'index.md'
+    
+    relative_path = page.path.sub(/^note\//, '')
+    is_hidden = hidden_notes.any? { |pattern| relative_path == pattern || File.fnmatch?(pattern, relative_path) }
+    
+    if is_hidden
+      Jekyll.logger.info 'AutoContent:', "Removing hidden note page from generation: #{page.path}"
+    end
+    
+    is_hidden
+  end
+end

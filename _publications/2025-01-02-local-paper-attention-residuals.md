@@ -1,7 +1,7 @@
 ---
 title: "Attention Residuals"
 collection: publications
-category: local-files
+category: archive
 permalink: /publication/attention-residuals/
 excerpt: 一篇已归档保存的本地论文资料，作为长期研究记录的一部分对外展示。
 date: 2025-01-02
