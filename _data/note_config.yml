@@ -6,7 +6,8 @@
 # - scheduler/k8s-scheduler-vs-volcano.md
 # - kubernetes/some-draft-note.md
 hidden_notes:
-  # - scheduler/k8s-scheduler-vs-volcano.md  # 示例：取消注释以隐藏此文件
+  # - scheduler/k8s-scheduler-vs-volcano.md  # 示例：取消注释以隐藏此文件 
+  - scheduler/Optimization_of_Cloud_Computing_Resource_Utilization_Based_on_Hotspot_Scheduling_and_Resource_Oversubscription.md
 
 # 隐藏的主题列表（整个主题目录不展示）
 hidden_topics:
