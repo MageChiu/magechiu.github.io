@@ -7,6 +7,7 @@ layout: default
 {% comment %}优先使用自动生成的主题数据{% endcomment %}
 {% assign auto_topic = site.data.auto_note_topics[topic_key] %}
 {% assign topic_meta = site.data.note_categories | where: 'key', topic_key | first %}
+{% assign note_config = site.data.note_config | default: site.data.note_config %}
 
 {% if auto_topic %}
   {% assign topic_title = page.title | default: auto_topic.title %}
@@ -65,7 +66,19 @@ layout: default
         {% assign note_path_parts = note.path | split: '/' %}
         {% assign note_topic = note.section | default: note_path_parts[1] | default: '' %}
         {% if note_topic == topic_key %}
-          {% include note_card.html note=note %}
+          {% assign note_relative_path = note.path | remove_first: 'note/' %}
+          {% assign is_hidden = false %}
+          {% if note_config.hidden_notes %}
+            {% for hidden_path in note_config.hidden_notes %}
+              {% if note_relative_path == hidden_path %}
+                {% assign is_hidden = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% unless is_hidden %}
+            {% include note_card.html note=note %}
+          {% endunless %}
         {% endif %}
       {% endfor %}
     </div>

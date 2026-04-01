@@ -106,17 +106,23 @@ module Jekyll
     end
 
     def load_note_config
-      @site.data['note_config'] || {}
+      config = @site.data['note_config'] || {}
+      Jekyll.logger.info 'AutoContent:', "Loaded note_config: #{config.inspect}"
+      config
     end
 
     def should_hide_topic?(topic_key, config)
       hidden_topics = config['hidden_topics'] || []
-      hidden_topics.include?(topic_key)
+      result = hidden_topics.include?(topic_key)
+      Jekyll.logger.debug "AutoContent:", "Topic #{topic_key} hidden? #{result}" if result
+      result
     end
 
     def should_hide_note?(relative_path, config)
       hidden_notes = config['hidden_notes'] || []
-      hidden_notes.any? { |pattern| relative_path == pattern || File.fnmatch?(pattern, relative_path) }
+      result = hidden_notes.any? { |pattern| relative_path == pattern || File.fnmatch?(pattern, relative_path) }
+      Jekyll.logger.info "AutoContent:", "Hiding note: #{relative_path}" if result
+      result
     end
 
     # 读取文件的 front matter
