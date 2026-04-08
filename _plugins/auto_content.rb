@@ -81,6 +81,11 @@ module Jekyll
         topic_key = entry.basename.to_s
 
         next if should_hide_topic?(topic_key, config)
+        
+        unless topic_has_definition?(topic_key)
+          Jekyll.logger.info 'AutoContent:', "Skipping topic without definition: #{topic_key}"
+          next
+        end
 
         entry.children.sort.each do |md_file|
           next unless md_file.file? && md_file.extname.downcase == '.md'
@@ -116,6 +121,11 @@ module Jekyll
       result = hidden_topics.include?(topic_key)
       Jekyll.logger.debug "AutoContent:", "Topic #{topic_key} hidden? #{result}" if result
       result
+    end
+
+    def topic_has_definition?(topic_key)
+      categories = @site.data['note_categories'] || []
+      categories.any? { |c| c['key'] == topic_key }
     end
 
     def should_hide_note?(relative_path, config)
@@ -605,16 +615,28 @@ Liquid::Template.register_filter(Jekyll::AutoContentFilters)
 # ============================================
 
 Jekyll::Hooks.register :site, :post_read do |site|
-  # 在读取完所有文件后，移除配置为隐藏的笔记页面
   config = site.data['note_config'] || {}
+  categories = site.data['note_categories'] || []
   hidden_notes = config['hidden_notes'] || []
+  hidden_topics = config['hidden_topics'] || []
   
-  next if hidden_notes.empty?
+  defined_topics = categories.map { |c| c['key'] }
   
-  # 过滤掉隐藏的笔记页面
   site.pages.reject! do |page|
     next false unless page.path&.start_with?('note/')
     next false if page.name == 'index.md'
+    
+    topic = page.path.split('/')[1]
+    
+    if hidden_topics.include?(topic)
+      Jekyll.logger.info 'AutoContent:', "Removing page from hidden topic: #{page.path}"
+      next true
+    end
+    
+    unless defined_topics.include?(topic)
+      Jekyll.logger.info 'AutoContent:', "Removing page from undefined topic: #{page.path}"
+      next true
+    end
     
     relative_path = page.path.sub(/^note\//, '')
     is_hidden = hidden_notes.any? { |pattern| relative_path == pattern || File.fnmatch?(pattern, relative_path) }

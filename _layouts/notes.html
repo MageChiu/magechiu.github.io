@@ -2,41 +2,8 @@
 layout: default
 ---
 
-{% comment %}
-  使用自动生成的主题数据（如果可用），否则回退到传统方式
-{% endcomment %}
 {% assign auto_topics = site.data.auto_note_topics %}
-{% assign use_auto_topics = false %}
-{% if auto_topics.size > 0 %}{% assign use_auto_topics = true %}{% endif %}
-
 {% assign note_config = site.data.note_config | default: site.data.note_config %}
-
-{% comment %}获取所有笔记并过滤隐藏的笔记{% endcomment %}
-{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
-{% assign visible_notes = '' | split: '' %}
-{% for note in all_notes %}
-  {% assign note_relative_path = note.path | remove_first: 'note/' %}
-  {% assign is_hidden = false %}
-  {% if note_config.hidden_notes %}
-    {% for hidden_path in note_config.hidden_notes %}
-      {% if note_relative_path == hidden_path %}
-        {% assign is_hidden = true %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-  {% unless is_hidden %}
-    {% assign visible_notes = visible_notes | push: note %}
-  {% endunless %}
-{% endfor %}
-
-{% if use_auto_topics %}
-  {% assign grouped_notes = visible_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
-{% else %}
-  {% assign grouped_notes = visible_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
-{% endif %}
-
-{% assign note_year_groups = visible_notes | group_by_exp: 'item', "item.date | date: '%Y'" %}
 
 <section class="page-header">
   <h1>{{ page.title }}</h1>
@@ -58,78 +25,57 @@ layout: default
   </div>
 
   <div class="category-grid">
-    {% for group in grouped_notes %}
-      {% comment %}优先使用自动生成的主题数据{% endcomment %}
-      {% assign auto_topic = auto_topics[group.name] %}
-      {% if auto_topic %}
-        {% assign topic_title = auto_topic.title %}
-        {% assign topic_description = auto_topic.description %}
-        {% assign topic_note_count = auto_topic.note_count %}
-        {% assign topic_latest = auto_topic.latest_note %}
-      {% else %}
-        {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-        {% assign topic_title = category_meta.title | default: group.name %}
-        {% assign topic_description = category_meta.description | default: '按主题整理的技术笔记归档。' %}
-        {% assign topic_note_count = group.items.size %}
-        {% assign topic_latest = group.items | first %}
-      {% endif %}
-
+    {% for topic in auto_topics %}
+      {% assign topic_key = topic[0] %}
+      {% assign topic_data = topic[1] %}
       <article class="category-card">
-        <h3>{{ topic_title }}</h3>
-        <p>{{ topic_description }}</p>
+        <h3>{{ topic_data.title }}</h3>
+        <p>{{ topic_data.description }}</p>
 
         <div class="category-card__meta">
-          <span>{{ topic_note_count }} 篇笔记</span>
-          {% if topic_latest %}
-            {% assign show_latest = true %}
-            {% if note_config.hidden_notes and topic_latest.path %}
-              {% assign latest_relative_path = topic_latest.path | remove_first: 'note/' %}
-              {% for hidden_path in note_config.hidden_notes %}
-                {% if latest_relative_path == hidden_path %}
-                  {% assign show_latest = false %}
-                  {% break %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-            {% if show_latest %}
-              {% if topic_latest.url %}
-                <span>最近更新：<a href="{{ topic_latest.url | relative_url }}">{{ topic_latest.title }}</a></span>
-              {% else %}
-                <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: topic_latest.filename | relative_url }}">{{ topic_latest.title }}</a></span>
-              {% endif %}
-            {% endif %}
+          <span>{{ topic_data.note_count }} 篇笔记</span>
+          {% if topic_data.latest_note %}
+            {% assign latest = topic_data.latest_note %}
+            <span>最近更新：<a href="{{ '/note/' | append: topic_key | append: '/' | append: latest.filename | remove_suffix: '.md' | append: '/' | relative_url }}">{{ latest.title }}</a></span>
           {% endif %}
-          <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">进入主题页</a></span>
+          <span><a href="{{ '/note/' | append: topic_key | append: '/' | relative_url }}">进入主题页</a></span>
         </div>
       </article>
     {% endfor %}
   </div>
 </section>
 
-{% for group in grouped_notes %}
-  {% comment %}优先使用自动生成的主题数据{% endcomment %}
-  {% assign auto_topic = auto_topics[group.name] %}
-  {% if auto_topic %}
-    {% assign section_title = auto_topic.title %}
-    {% assign section_description = auto_topic.description %}
-  {% else %}
-    {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-    {% assign section_title = category_meta.title | default: group.name %}
-    {% assign section_description = category_meta.description | default: '按时间倒序展示该主题下的技术笔记。' %}
-  {% endif %}
-
-  <section class="list-section" id="{{ group.name }}">
+{% for topic in auto_topics %}
+  {% assign topic_key = topic[0] %}
+  {% assign topic_data = topic[1] %}
+  
+  <section class="list-section" id="{{ topic_key }}">
     <div class="section-heading">
       <div>
-        <h2>{{ section_title }}</h2>
-        <p>{{ section_description }}</p>
+        <h2>{{ topic_data.title }}</h2>
+        <p>{{ topic_data.description }}</p>
       </div>
-      <span class="section-count">{{ group.items.size }} 篇</span>
+      <span class="section-count">{{ topic_data.note_count }} 篇</span>
     </div>
 
     <div class="archive-list">
-      {% for note in group.items %}
-        {% include note_card.html note=note %}
+      {% for note in topic_data.notes %}
+        <article class="note-card">
+          <div class="note-card__header">
+            <a href="{{ '/note/' | append: topic_key | append: '/' | append: note.filename | remove_suffix: '.md' | append: '/' | relative_url }}" class="note-card__title">{{ note.title }}</a>
+            <time class="note-card__date">{{ note.date | date: '%Y-%m-%d' }}</time>
+          </div>
+          {% if note.summary %}
+            <p class="note-card__summary">{{ note.summary }}</p>
+          {% endif %}
+          {% if note.tags and note.tags.size > 0 %}
+            <div class="note-card__tags">
+              {% for tag in note.tags limit:3 %}
+                <span class="note-card__tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </article>
       {% endfor %}
     </div>
   </section>
@@ -144,12 +90,34 @@ layout: default
     <a class="section-link" href="{{ '/year-archive/' | relative_url }}">open full year archive</a>
   </div>
 
-  {% for year_group in note_year_groups %}
+  {% assign all_notes_by_year = "" | split: "" %}
+  {% for topic in auto_topics %}
+    {% for note in topic[1].notes %}
+      {% assign all_notes_by_year = all_notes_by_year | push: note %}
+    {% endfor %}
+  {% endfor %}
+  {% assign year_groups = all_notes_by_year | group_by_exp: 'item', "item.date | date: '%Y'" %}
+  
+  {% for year_group in year_groups %}
     <section class="year-archive-section">
       <h3 class="year-archive-section__title">{{ year_group.name }}</h3>
       <div class="archive-list">
         {% for note in year_group.items %}
-          {% include note_card.html note=note %}
+          {% for topic in auto_topics %}
+            {% if topic[1].notes contains note %}
+              {% assign note_topic_key = topic[0] %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          <article class="note-card">
+            <div class="note-card__header">
+              <a href="{{ '/note/' | append: note_topic_key | append: '/' | append: note.filename | remove_suffix: '.md' | append: '/' | relative_url }}" class="note-card__title">{{ note.title }}</a>
+              <time class="note-card__date">{{ note.date | date: '%Y-%m-%d' }}</time>
+            </div>
+            {% if note.summary %}
+              <p class="note-card__summary">{{ note.summary }}</p>
+            {% endif %}
+          </article>
         {% endfor %}
       </div>
     </section>

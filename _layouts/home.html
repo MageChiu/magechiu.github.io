@@ -2,19 +2,11 @@
 layout: default
 ---
 
-{% comment %}
-  使用自动生成的数据（如果可用），否则回退到传统方式
-{% endcomment %}
 {% assign auto_topics = site.data.auto_note_topics %}
 {% assign auto_papers = site.data.auto_merged_papers %}
-{% assign use_auto_data = false %}
-{% if auto_topics.size > 0 %}{% assign use_auto_data = true %}{% endif %}
-
-{% assign all_notes = site.pages | where_exp: 'item', "item.path contains 'note/' and item.name != 'index.md'" | sort: 'date' | reverse %}
+{% assign note_config = site.data.note_config | default: site.data.note_config %}
 {% assign directory_name = site.homepage_note_directory | default: '' %}
-{% assign grouped_notes = all_notes | group_by_exp: 'item', "item.section | default: item.path | split: '/' | slice: 1, 1 | first" %}
 
-{% comment %}使用合并后的论文数据（包含自动识别的本地PDF）{% endcomment %}
 {% if auto_papers and auto_papers.size > 0 %}
   {% assign all_papers = auto_papers %}
   {% assign featured_papers = auto_papers | where: 'featured', true %}
@@ -23,17 +15,14 @@ layout: default
   {% assign featured_papers = site.publications | where: 'featured', true | sort: 'date' | reverse %}
 {% endif %}
 
+{% assign total_visible_notes = 0 %}
+{% for topic in auto_topics %}
+  {% assign total_visible_notes = total_visible_notes | plus: topic[1].note_count %}
+{% endfor %}
+
 {% assign home_notes_count = 0 %}
-{% if use_auto_data and auto_topics[directory_name] %}
+{% if auto_topics and auto_topics[directory_name] %}
   {% assign home_notes_count = auto_topics[directory_name].note_count %}
-{% else %}
-  {% for note in all_notes %}
-    {% assign note_path_parts = note.path | split: '/' %}
-    {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
-    {% if note_directory == directory_name %}
-      {% assign home_notes_count = home_notes_count | plus: 1 %}
-    {% endif %}
-  {% endfor %}
 {% endif %}
 
 <section class="academic-hero">
@@ -48,7 +37,7 @@ layout: default
   </div>
 
   <ul class="about-highlights">
-    <li><strong>{{ all_notes.size }}</strong><span>Public Notes</span></li>
+    <li><strong>{{ total_visible_notes }}</strong><span>Public Notes</span></li>
     <li><strong>{{ home_notes_count }}</strong><span>Current Topic</span></li>
     <li><strong>{{ all_papers.size }}</strong><span>Publications</span></li>
     <li><strong>{{ site.publication_category.size }}</strong><span>Paper Sections</span></li>
@@ -58,8 +47,7 @@ layout: default
 <section class="list-section" id="current-directory">
   <div class="section-heading">
     <div>
-      {% comment %}优先使用自动生成的主题数据{% endcomment %}
-      {% if use_auto_data and auto_topics[directory_name] %}
+      {% if auto_topics and auto_topics[directory_name] %}
         {% assign current_directory_title = auto_topics[directory_name].title %}
         {% assign current_directory_description = auto_topics[directory_name].description %}
       {% else %}
@@ -73,28 +61,21 @@ layout: default
     <a class="section-link" href="{{ '/notes/' | relative_url }}">all notes</a>
   </div>
 
-  {% if home_notes_count > 0 %}
+  {% if home_notes_count > 0 and auto_topics[directory_name] %}
     <div class="note-list">
-      {% assign rendered_home_notes = 0 %}
-      {% assign note_config = site.data.note_config | default: site.data.note_config %}
-      {% for note in all_notes %}
-        {% assign note_path_parts = note.path | split: '/' %}
-        {% assign note_directory = note.section | default: note_path_parts[1] | default: '' %}
-        {% if note_directory == directory_name and rendered_home_notes < 6 %}
-          {% assign note_relative_path = note.path | remove_first: 'note/' %}
-          {% assign is_hidden = false %}
-          {% if note_config.hidden_notes %}
-            {% for hidden_path in note_config.hidden_notes %}
-              {% if note_relative_path == hidden_path %}
-                {% assign is_hidden = true %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-          {% unless is_hidden %}
-            {% include note_card.html note=note %}
-            {% assign rendered_home_notes = rendered_home_notes | plus: 1 %}
-          {% endunless %}
+      {% assign rendered_count = 0 %}
+      {% for note in auto_topics[directory_name].notes %}
+        {% if rendered_count < 6 %}
+          <article class="note-card">
+            <div class="note-card__header">
+              <a href="{{ '/note/' | append: directory_name | append: '/' | append: note.filename | remove_suffix: '.md' | append: '/' | relative_url }}" class="note-card__title">{{ note.title }}</a>
+              <time class="note-card__date">{{ note.date | date: '%Y-%m-%d' }}</time>
+            </div>
+            {% if note.summary %}
+              <p class="note-card__summary">{{ note.summary }}</p>
+            {% endif %}
+          </article>
+          {% assign rendered_count = rendered_count | plus: 1 %}
         {% endif %}
       {% endfor %}
     </div>
@@ -132,48 +113,20 @@ layout: default
   </div>
 
   <div class="category-grid">
-    {% assign note_config = site.data.note_config | default: site.data.note_config %}
-    {% for group in grouped_notes %}
-      {% assign auto_topic = auto_topics[group.name] %}
-      {% if auto_topic %}
-        {% assign card_title = auto_topic.title %}
-        {% assign card_description = auto_topic.description %}
-        {% assign card_note_count = auto_topic.note_count %}
-        {% assign card_latest = auto_topic.latest_note %}
-      {% else %}
-        {% assign category_meta = site.data.note_categories | where: 'key', group.name | first %}
-        {% assign card_title = category_meta.title | default: group.name %}
-        {% assign card_description = category_meta.description | default: '该主题下的技术笔记。' %}
-        {% assign card_note_count = group.items.size %}
-        {% assign card_latest = group.items | first %}
-      {% endif %}
-
+    {% for topic in auto_topics %}
+      {% assign topic_key = topic[0] %}
+      {% assign topic_data = topic[1] %}
       <article class="category-card">
-        <h3>{{ card_title }}</h3>
-        <p>{{ card_description }}</p>
+        <h3>{{ topic_data.title }}</h3>
+        <p>{{ topic_data.description }}</p>
 
         <div class="category-card__meta">
-          <span>{{ card_note_count }} 篇笔记</span>
-          {% if card_latest %}
-            {% assign show_latest = true %}
-            {% if note_config.hidden_notes %}
-              {% assign latest_relative_path = card_latest.path | remove_first: 'note/' %}
-              {% for hidden_path in note_config.hidden_notes %}
-                {% if latest_relative_path == hidden_path %}
-                  {% assign show_latest = false %}
-                  {% break %}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-            {% if show_latest %}
-              {% if card_latest.url %}
-                <span>最近更新：<a href="{{ card_latest.url | relative_url }}">{{ card_latest.title }}</a></span>
-              {% else %}
-                <span>最近更新：<a href="{{ '/note/' | append: group.name | append: '/' | append: card_latest.filename | relative_url }}">{{ card_latest.title }}</a></span>
-              {% endif %}
-            {% endif %}
+          <span>{{ topic_data.note_count }} 篇笔记</span>
+          {% if topic_data.latest_note %}
+            {% assign latest = topic_data.latest_note %}
+            <span>最近更新：<a href="{{ '/note/' | append: topic_key | append: '/' | append: latest.filename | remove_suffix: '.md' | append: '/' | relative_url }}">{{ latest.title }}</a></span>
           {% endif %}
-          <span><a href="{{ '/note/' | append: group.name | append: '/' | relative_url }}">查看该主题</a></span>
+          <span><a href="{{ '/note/' | append: topic_key | append: '/' | relative_url }}">查看该主题</a></span>
         </div>
       </article>
     {% endfor %}

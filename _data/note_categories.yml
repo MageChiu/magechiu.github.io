@@ -1,3 +1,12 @@
+# Note 主题分类配置
+# 
+# 字段说明：
+#   key         - 必填，对应 note/ 目录下的文件夹名称
+#   title       - 必填，页面展示的标题（支持中英文）
+#   description - 可选，主题描述。不填则使用默认描述
+#
+# 注意：只有在此文件中定义的主题才会显示在页面上
+
 - key: kubernetes
   title: Kubernetes
   description: 记录 Kubernetes、Operator、GPU 调度与云原生基础设施相关的长期技术笔记。

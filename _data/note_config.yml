@@ -1,5 +1,10 @@
 # Note 配置文件
-# 控制哪些笔记文件暂时不在主题页面展示
+# 控制哪些笔记文件和主题目录在页面展示
+
+# 主题分类说明：
+# - 只有在 _data/note_categories.yml 中定义了说明的主题才会显示
+# - 未定义的主题会被自动跳过，不会在页面展示
+# - 如需添加新主题，请先在 note_categories.yml 中添加定义
 
 # 隐藏的笔记文件列表（相对于 note 目录的路径）
 # 示例：
@@ -7,7 +12,7 @@
 # - kubernetes/some-draft-note.md
 hidden_notes:
   # - scheduler/k8s-scheduler-vs-volcano.md  # 示例：取消注释以隐藏此文件 
-  - scheduler/Optimization_of_Cloud_Computing_Resource_Utilization_Based_on_Hotspot_Scheduling_and_Resource_Oversubscription.md
+  # - scheduler/Optimization_of_Cloud_Computing_Resource_Utilization_Based_on_Hotspot_Scheduling_and_Resource_Oversubscription.md
 
 # 隐藏的主题列表（整个主题目录不展示）
 hidden_topics:
