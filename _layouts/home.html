@@ -68,7 +68,7 @@ layout: default
         {% if rendered_count < 6 %}
           <article class="note-card">
             <div class="note-card__header">
-              <a href="{{ '/note/' | append: directory_name | append: '/' | append: note.filename | remove_suffix: '.md' | append: '/' | relative_url }}" class="note-card__title">{{ note.title }}</a>
+              <a href="{{ '/note/' | append: directory_name | append: '/' | append: note.filename | replace: '.md', '' | append: '/' | relative_url }}" class="note-card__title">{{ note.title }}</a>
               <time class="note-card__date">{{ note.date | date: '%Y-%m-%d' }}</time>
             </div>
             {% if note.summary %}
@@ -124,7 +124,7 @@ layout: default
           <span>{{ topic_data.note_count }} 篇笔记</span>
           {% if topic_data.latest_note %}
             {% assign latest = topic_data.latest_note %}
-            <span>最近更新：<a href="{{ '/note/' | append: topic_key | append: '/' | append: latest.filename | remove_suffix: '.md' | append: '/' | relative_url }}">{{ latest.title }}</a></span>
+            <span>最近更新：<a href="{{ '/note/' | append: topic_key | append: '/' | append: latest.filename | replace: '.md', '' | append: '/' | relative_url }}">{{ latest.title }}</a></span>
           {% endif %}
           <span><a href="{{ '/note/' | append: topic_key | append: '/' | relative_url }}">查看该主题</a></span>
         </div>
