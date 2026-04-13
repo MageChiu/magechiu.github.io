@@ -28,6 +28,7 @@ layout: default
       {% if page.tags and page.tags.size > 0 %}
         <span>标签：{{ page.tags | join: ' / ' }}</span>
       {% endif %}
+      <span id="busuanzi_container_page_pv">阅读 <strong id="busuanzi_value_page_pv"></strong></span>
     </div>
 
     {% if page.hero_image %}

@@ -361,6 +361,32 @@ pre {
   font-size: 1.05rem;
 }
 
+.visit-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+  color: var(--global-text-color-light);
+  font-size: 0.92rem;
+}
+
+.visit-stats span[id^="busuanzi_container_"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(74, 111, 165, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.visit-stats strong,
+.note-hero__meta strong {
+  color: var(--global-theme-color);
+  font-family: "Merriweather", serif;
+  font-weight: 700;
+}
+
 .markdown-body--home {
   margin-top: 0;
 }
@@ -741,6 +767,12 @@ pre {
   gap: 0.9rem;
   margin-top: 1rem;
   font-size: 0.9rem;
+}
+
+.note-hero__meta span[id^="busuanzi_container_"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .note-hero__actions {
