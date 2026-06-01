@@ -1,3 +1,15 @@
+---
+title: Kubeflow vs KubeRay 对比分析与学习指南
+date: 2026-06-01
+section: ai
+summary: 对比 Kubeflow 与 KubeRay 的定位、适用场景、架构差异与落地选型建议。
+tags:
+  - kubeflow
+  - kuberay
+  - ray
+  - mlops
+---
+
 # Kubeflow vs KubeRay 对比分析与学习指南
 
 ## 一、项目定位
