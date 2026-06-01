@@ -1,4 +1,4 @@
-***
+---
 
 title: 推荐几个好用的esim网站
 date: 2026-06-01
@@ -9,7 +9,7 @@ tags:
 - esim
 - openai
 
-***
+---
 
 # 推荐几个好用的esim网站
 
@@ -69,4 +69,3 @@ tags:
 ![](media/recommended-esim-providers-2.png)
 
 app可以在applestore/google下载
-

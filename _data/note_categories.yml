@@ -14,3 +14,11 @@
 - key: scheduler
   title: Scheduler
   description: 记录批处理调度、资源编排、公平性策略与性能感知调度相关的技术笔记。
+
+- key: ai
+  title: AI Engineering
+  description: 记录 AI 工程化、模型平台、推理服务与相关工具链实践。
+
+- key: other
+  title: Other Notes
+  description: 收录不归属于固定专题的技术记录、实用经验与零散整理。

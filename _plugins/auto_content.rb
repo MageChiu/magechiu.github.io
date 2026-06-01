@@ -82,11 +82,6 @@ module Jekyll
 
         next if should_hide_topic?(topic_key, config)
         
-        unless topic_has_definition?(topic_key)
-          Jekyll.logger.info 'AutoContent:', "Skipping topic without definition: #{topic_key}"
-          next
-        end
-
         entry.children.sort.each do |md_file|
           next unless md_file.file? && md_file.extname.downcase == '.md'
           next if md_file.basename.to_s == 'index.md'
@@ -121,11 +116,6 @@ module Jekyll
       result = hidden_topics.include?(topic_key)
       Jekyll.logger.debug "AutoContent:", "Topic #{topic_key} hidden? #{result}" if result
       result
-    end
-
-    def topic_has_definition?(topic_key)
-      categories = @site.data['note_categories'] || []
-      categories.any? { |c| c['key'] == topic_key }
     end
 
     def should_hide_note?(relative_path, config)
@@ -620,8 +610,6 @@ Jekyll::Hooks.register :site, :post_read do |site|
   hidden_notes = config['hidden_notes'] || []
   hidden_topics = config['hidden_topics'] || []
   
-  defined_topics = categories.map { |c| c['key'] }
-  
   site.pages.reject! do |page|
     next false unless page.path&.start_with?('note/')
     next false if page.name == 'index.md'
@@ -630,11 +618,6 @@ Jekyll::Hooks.register :site, :post_read do |site|
     
     if hidden_topics.include?(topic)
       Jekyll.logger.info 'AutoContent:', "Removing page from hidden topic: #{page.path}"
-      next true
-    end
-    
-    unless defined_topics.include?(topic)
-      Jekyll.logger.info 'AutoContent:', "Removing page from undefined topic: #{page.path}"
       next true
     end
     
