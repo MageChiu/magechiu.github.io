@@ -24,6 +24,9 @@ fi
 printf '[blog-dev] cleaning old build artifacts...\n'
 bundle exec jekyll clean
 
+printf '[blog-dev] validating content format...\n'
+ruby "${SCRIPT_DIR}/validate-content.rb"
+
 printf '[blog-dev] building site...\n'
 bundle exec jekyll build --trace
 
