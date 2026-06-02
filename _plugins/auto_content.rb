@@ -133,13 +133,17 @@ module Jekyll
       if content =~ /\A---\s*\n(.*?)\n---\s*\n/m
         yaml_content = $1
         begin
-          YAML.safe_load(yaml_content, permitted_classes: [Date, Time]) || {}
+          parsed = YAML.safe_load(yaml_content, permitted_classes: [Date, Time])
+          return nil unless parsed.is_a?(Hash) && !parsed.empty?
+
+          parsed
         rescue => e
           Jekyll.logger.warn 'AutoContent:', "Failed to parse front matter in #{file_path}: #{e.message}"
-          {}
+          nil
         end
       else
-        {}
+        Jekyll.logger.warn 'AutoContent:', "Skipping note without front matter: #{file_path}"
+        nil
       end
     end
 
@@ -327,7 +331,7 @@ module Jekyll
         'date' => Date.new(year, 1, 1),
         'authors' => 'Archived material',
         'venue' => 'Local Archive',
-        'category' => 'local-files',
+        'category' => 'archive',
         'paper_source' => 'local',
         'excerpt' => '本地归档的论文资料，可通过站点直接访问。',
         'tags' => ['local-pdf', 'auto-generated'],
